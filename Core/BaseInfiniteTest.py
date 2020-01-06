@@ -20,14 +20,15 @@ class BaseInfiniteTest(BaseTest):
         self.init()
         self.before()
         while True:
+            print 'iteration = ', iter
             self.driver.refresh()
             self.relogin()
             try:
-                print 'iteration = ', iter
                 self.main_loop()
             except Exception:
                 self.slack_bot.send_message(traceback.format_exc(), channel=SlackChannels.ALERTS)
                 traceback.print_exc(file=sys.stdout)
+            print 'sleep {} seconds'.format(self.TIMEOUT)
             time.sleep(self.TIMEOUT)
             iter += 1
         self.finish()

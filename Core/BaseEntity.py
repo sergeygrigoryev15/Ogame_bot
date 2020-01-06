@@ -18,7 +18,8 @@ class BaseEntity(object):
         self.URL = 'http://ogame.ru'
         self.slack_bot = bot
         self.chrome_options = Options()
-        self.chrome_options.add_argument("--headless")
+        if os.environ.get('HEADLESS', False):
+            self.chrome_options.add_argument("--headless")
 
     @property
     def driver(self):
