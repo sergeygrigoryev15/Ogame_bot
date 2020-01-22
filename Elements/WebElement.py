@@ -16,7 +16,13 @@ class WebElement(BaseElement):
             self.__setattr__('web_element', element)
 
     def click(self):
-        self.element.click()
+        try:
+            self.element.click()
+        except Exception:
+            self.click_via_js()
+
+    def click_via_js(self):
+        self.driver.execute_script('arguments[0].click();', self.element)
 
     def send_keys(self, text):
         self.element.send_keys(text)
