@@ -26,9 +26,8 @@ class SaveFleetTest(BaseInfiniteTest):
         for fleet in enemy_fleets:
             if float(fleet['arrival_time']) - time.time() < self.SAVE_FLEET_TIMEOUT:
                 self.slack_bot.send_message('we are under attack:\n{}'.format(fleet), channel=SlackChannels.ALERTS)
-                to_planet = fleet['to_coordinates']
-                commands.save_fleet(to_planet)
-                commands.return_fleet(to_planet)
+                commands.save_fleet(fleet['to_coordinates'])
+        commands.return_fleet()
         print 'end loop'
 
 

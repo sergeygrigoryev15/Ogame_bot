@@ -11,10 +11,44 @@ class DbUtils(object):
         self.init()
 
     def init(self):
-        for sql in [self.create_users, self.create_planets, self.create_items,
-                    self.create_resources, self.create_queues]:
-            self.connection.execute(sql)
+        # for sql in [self.create_users, self.create_planets, self.create_items, self.create_resources, self.create_queues, self.save_fleet]:
+        for sql in [self.create_save_fleet_queue, self.create_return_fleet_queue]:
+            self.cursor.execute(sql)
         self.connection.commit()
+
+    def save_fleet(self, planet):
+        if planet not in self.get_save_fleet_queue():
+            self.cursor.execute('INSERT INTO save_fleet_queue (name) VALUES (?)', planet)
+            self.connection.commit()
+
+    def return_fleet(self, planet):
+        if planet not in self.get_return_fleet_queue():
+            self.cursor.execute('INSERT INTO return_fleet_queue (name) VALUES (?)', planet)
+            self.connection.commit()
+
+    def get_save_fleet_queue(self):
+        cur = self.cursor.execute('SELECT * FROM save_fleet_queue')
+        return [el[1] for el in cur.fetchall()]
+
+    def get_return_fleet_queue(self):
+        cur = self.cursor.execute('SELECT * FROM return_fleet_queue')
+        return [el[1] for el in cur.fetchall()]
+
+    def delete_saved_fleet(self, planet):
+        self.cursor.execute('DELETE FROM save_fleet_queue WHERE name=?', (planet,))
+        self.connection.commit()
+
+    def delete_returned_fleet(self, planet):
+        self.cursor.execute('DELETE FROM return_fleet_queue WHERE name=?', (planet,))
+        self.connection.commit()
+
+    @property
+    def create_save_fleet_queue(self):
+        return """CREATE TABLE IF NOT EXISTS save_fleet_queue(name text NOT NULL)"""
+
+    @property
+    def create_return_fleet_queue(self):
+        return """CREATE TABLE IF NOT EXISTS return_fleet_queue(name text NOT NULL)"""
 
     @property
     def create_users(self):

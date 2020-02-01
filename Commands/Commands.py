@@ -1,6 +1,7 @@
 import random
 
 from Core.BaseEntity import BaseEntity
+from Enums.FleetMissionTypes import FleetMissionTypes
 from Enums.MenuTabs import MenuTabs
 from Screens.FleetDestinationScreen import FleetDestinationScreen
 from Screens.FleetMissionScreen import FleetMissionScreen
@@ -34,20 +35,25 @@ class Commands(BaseEntity):
 
             self.slack_bot\
                 .send_message('fleet from planet {} was saved! (sent to {}).'.format(planet, destination_planet))
-            # add fleet to database
+            self.db.return_fleet(planet)
 
             fleet_mission_screen.navigation_menu.open_tab(MenuTabs.OVERVIEW)
         else:
             self.slack_bot.send_message('There is no fleet on the planet {}. Nothing to save.'.format(planet))
             fleet_screen.navigation_menu.open_tab(MenuTabs.OVERVIEW)
 
-    def return_fleet(self, planet):
+    def return_fleet(self):
+        planets = self.db.get_return_fleet_queue()
         overview_screen = OverviewScreen()
-        if not overview_screen.fleetAlertsTab.is_alert:
+        log = overview_screen.fleetAlertsTab.get_log()
+        enemy_fleets = filter(lambda el:
+                el['is_friendly'] is False and
+                el['mission_type'] == FleetMissionTypes.ATTACK, log)
+        for planet in [p for p in planets if p not in [el['to_coordinates'] for el in enemy_fleets]]:
             overview_screen.navigation_menu.open_tab(MenuTabs.FLEET_MOVEMENTS)
             fleet_movements_screen = FleetMovementsScreen()
             fleet_movements_screen.return_fleet(from_coordinates=planet)
-            # delete task from queue
+            self.db.delete_returned_fleet(planet)
             self.slack_bot.send_message('Fleet returning to planet {}.'.format(planet))
 
 
