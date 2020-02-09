@@ -18,12 +18,12 @@ class DbUtils(object):
 
     def save_fleet(self, planet):
         if planet not in self.get_save_fleet_queue():
-            self.cursor.execute('INSERT INTO save_fleet_queue (name) VALUES (?)', planet)
+            self.cursor.execute('INSERT INTO save_fleet_queue (name) VALUES (?)', (planet,))
             self.connection.commit()
 
     def return_fleet(self, planet):
         if planet not in self.get_return_fleet_queue():
-            self.cursor.execute('INSERT INTO return_fleet_queue (name) VALUES (?)', planet)
+            self.cursor.execute('INSERT INTO return_fleet_queue (name) VALUES (?)', (planet,))
             self.connection.commit()
 
     def get_save_fleet_queue(self):

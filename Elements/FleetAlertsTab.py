@@ -1,8 +1,11 @@
 import time
+from datetime import datetime
 
 from selenium.webdriver.common.by import By
 
 from Elements.WebElement import WebElement
+
+DATE_FORMAT = '%d.%m %H:%M:%S'
 
 
 class BattleEvent(object):
@@ -14,14 +17,13 @@ class BattleEvent(object):
 
         self.is_return = self.element.get_attribute('data-return-flight') == 'true'
 
-        # self.remaining_time = self.element.find_element_by_xpath(
-        #     self.additionalXpathPattern.format('countDown')).get_time()
-
         self.is_friendly = 'friendly' in self.element.find_element_by_xpath(
             self.additionalXpathPattern.format('countDown') + '/*[contains(@id, "counter-eventlist")]')\
             .get_attribute('class')
 
-        self.arrival_time = self.element.get_attribute('data-arrival-time')
+        self.arrival_time = datetime.fromtimestamp(int(self.element.get_attribute('data-arrival-time')))
+
+        self.remaining_time = self.arrival_time - datetime.now()
 
         self.from_planet = self.element.find_element_by_xpath(
             self.additionalXpathPattern.format('originFleet')).get_text()
@@ -42,14 +44,14 @@ class BattleEvent(object):
         return {
             'mission_type': self.mission_type,
             'is_return': self.is_return,
-            # 'remaining_time': self.remaining_time,
-            'arrival_time': self.arrival_time,
+            'arrival_time': self.arrival_time.strftime(DATE_FORMAT),
             'from_planet': self.from_planet,
             'from_coordinates': self.from_coordinates,
             'to_planet': self.to_planet,
             'to_coordinates': self.to_coordinates,
             'fleet_size': self.fleet_size,
-            'is_friendly': self.is_friendly
+            'is_friendly': self.is_friendly,
+            'remaining_time': str(self.remaining_time)
         }
 
 
@@ -95,7 +97,7 @@ class FleetAlertsTab(WebElement):
 
     @property
     def event_log(self):
-        return [BattleEvent(el).__str__() for el in WebElement("//*[contains(@id, 'eventContent')]//tr").elements]
+        return [BattleEvent(el) for el in WebElement("//*[contains(@id, 'eventContent')]//tr").elements]
 
     def get_log(self):
         if self.empty_fleet_list.is_present():
