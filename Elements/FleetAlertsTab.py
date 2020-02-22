@@ -4,6 +4,7 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 
 from Elements.WebElement import WebElement
+from Enums.FleetMissionTypes import FleetMissionTypes
 
 DATE_FORMAT = '%d.%m %H:%M:%S'
 
@@ -42,7 +43,7 @@ class BattleEvent(object):
 
     def __str__(self):
         return {
-            'mission_type': self.mission_type,
+            'mission_type': FleetMissionTypes.get_by_name(self.mission_type),
             'is_return': self.is_return,
             'arrival_time': self.arrival_time.strftime(DATE_FORMAT),
             'from_planet': self.from_planet,

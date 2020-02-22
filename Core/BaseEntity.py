@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 
 from Bot.SlackBot import bot
 from Core.DbUtils import DbUtils
+from Core.Logger import Logger
 
 global web_driver
 web_driver = None
@@ -17,6 +18,7 @@ class BaseEntity(object):
     def __init__(self):
         self.URL = 'http://ogame.ru'
         self.slack_bot = bot
+        self.logger = Logger()
         self.chrome_options = Options()
         if os.environ.get('HEADLESS', False):
             self.chrome_options.add_argument("--headless")

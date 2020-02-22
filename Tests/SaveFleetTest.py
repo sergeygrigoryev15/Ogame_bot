@@ -12,12 +12,11 @@ class SaveFleetTest(BaseInfiniteTest):
     SAVE_FLEET_TIMEOUT = timedelta(minutes=10)
 
     def main_loop(self):
-        print 'start loop'
+        self.logger.log('start loop')
         overview_screen = OverviewScreen()
         log = overview_screen.fleetAlertsTab.get_log()
-        print 'log = '
-        for el in log:
-            print el.__str__()
+        self.logger.log('log = ')
+        self.logger.log(self.logger.make_table([el.__str__() for el in log], coloring={'is_friendly': lambda x: x}))
         enemy_fleets = \
             filter(
                 lambda el:
@@ -29,7 +28,7 @@ class SaveFleetTest(BaseInfiniteTest):
                 self.slack_bot.send_message('we are under attack:\n{}'.format(fleet), channel=SlackChannels.ALERTS)
                 commands.save_fleet(fleet.to_coordinates)
         commands.return_fleet()
-        print 'end loop'
+        self.logger.log('end loop')
 
 
 if __name__ == '__main__':

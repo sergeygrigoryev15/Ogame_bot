@@ -18,11 +18,9 @@ class BaseTest(BaseEntity):
         hub_screen.continue_game()
 
     def relogin(self):
-        try:
+        if HubScreen.is_open():
             hub_screen = HubScreen()
             hub_screen.continue_game()
-        except Exception:
-            pass
 
     def run_test(self):
         pass
