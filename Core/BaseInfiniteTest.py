@@ -20,7 +20,7 @@ class BaseInfiniteTest(BaseTest):
         self.init()
         self.before()
         while True:
-            print 'iteration = ', iter
+            self.logger.add('iteration = {}'.format(iter))
             self.driver.refresh()
             self.relogin()
             try:
@@ -28,7 +28,8 @@ class BaseInfiniteTest(BaseTest):
             except Exception:
                 self.slack_bot.send_message(traceback.format_exc(), channel=SlackChannels.ALERTS)
                 traceback.print_exc(file=sys.stdout)
-            print 'sleep {} seconds'.format(self.TIMEOUT)
+            self.logger.add('sleep {} seconds'.format(self.TIMEOUT))
+            self.logger.print_all()
             time.sleep(self.TIMEOUT)
             iter += 1
         self.finish()
