@@ -26,7 +26,9 @@ class SaveFleetTest(BaseInfiniteTest):
                 not el.is_return, log)
         for fleet in enemy_fleets:
             if fleet.remaining_time < self.SAVE_FLEET_TIMEOUT:
-                self.slack_bot.send_message('we are under attack:\n{}'.format(fleet), channel=SlackChannels.ALERTS)
+                self.slack_bot.send_message(
+                    'we are under attack:\n{} ({})'.format(fleet.to_coordinates, fleet.remaining_time),
+                    channel=SlackChannels.ALERTS)
                 commands.save_fleet(fleet.to_coordinates)
         commands.return_fleet()
         self.logger.add('end loop')

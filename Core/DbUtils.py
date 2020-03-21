@@ -28,11 +28,11 @@ class DbUtils(object):
 
     def get_save_fleet_queue(self):
         cur = self.cursor.execute('SELECT * FROM save_fleet_queue')
-        return [el[1] for el in cur.fetchall()]
+        return [el[0] for el in cur.fetchall()]
 
     def get_return_fleet_queue(self):
         cur = self.cursor.execute('SELECT * FROM return_fleet_queue')
-        return [el[1] for el in cur.fetchall()]
+        return [el[0] for el in cur.fetchall()]
 
     def delete_saved_fleet(self, planet):
         self.cursor.execute('DELETE FROM save_fleet_queue WHERE name=?', (planet,))
