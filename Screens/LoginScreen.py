@@ -1,7 +1,7 @@
-import os
 from selenium.webdriver.common.by import By
 
 from Core.BaseScreen import BaseScreen
+from Core.Env import environ, env
 from Elements.WebElement import WebElement
 
 
@@ -15,8 +15,8 @@ class LoginScreen(BaseScreen):
         self.password = WebElement('password', By.NAME)
         self.submit = WebElement('//button[@type="submit"]')
 
-    def login(self, login=os.getenv('EMAIL'), password=os.getenv('PASSWORD')):
+    def login(self, login=None, password=None):
         self.tab_login.click()
-        self.email.send_keys(login)
-        self.password.send_keys(password)
+        self.email.send_keys(login if login else environ(env.str, 'EMAIL'))
+        self.password.send_keys(password if password else environ(env.str, 'PASSWORD'))
         self.submit.click()

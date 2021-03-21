@@ -1,4 +1,3 @@
-import os
 import time
 import re
 from collections import deque
@@ -8,6 +7,7 @@ from slack import WebClient
 from slack.errors import SlackApiError
 
 from Bot.SlackChannels import SlackChannels
+from Core.Env import environ, env
 
 global slackCommands
 slackCommands = deque()
@@ -18,7 +18,8 @@ class SlackBot(object):
     MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 
     def __init__(self):
-        self.client = WebClient(os.environ.get('SLACK_BOT_TOKEN'))
+        token = environ(env.str, 'SLACK_BOT_TOKEN')
+        self.client = WebClient(token)
         self.connect()
         self.user_id = self.client.api_call("auth.test")["user_id"]
 

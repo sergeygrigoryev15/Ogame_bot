@@ -2,3 +2,4 @@ slackclient==2.9.3
 selenium==3.141.0
 loguru==0.5.3
 prettytable==2.1.0
+environs==9.3.1

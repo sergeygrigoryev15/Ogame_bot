@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 
 from Bot.SlackBot import bot
 from Core.DbUtils import DbUtils
+from Core.Env import environ, env
 from Core.Logger import Logger
 
 global web_driver
@@ -20,7 +21,7 @@ class BaseEntity(object):
         self.slack_bot = bot
         self.logger = Logger()
         self.chrome_options = Options()
-        if os.environ.get('HEADLESS', False):
+        if environ(env.bool, 'HEADLESS', False):
             self.chrome_options.add_argument("--headless")
 
     @property
