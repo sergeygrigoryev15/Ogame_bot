@@ -7,7 +7,6 @@ XPATH = '//*[@id="hub"]'
 
 
 class HubScreen(BaseScreen):
-
     def __init__(self):
         BaseScreen.__init__(self, XPATH)
 

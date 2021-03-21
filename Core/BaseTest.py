@@ -7,7 +7,6 @@ from Screens.LoginScreen import LoginScreen
 
 
 class BaseTest(BaseEntity):
-
     def __init__(self):
         BaseEntity.__init__(self)
 

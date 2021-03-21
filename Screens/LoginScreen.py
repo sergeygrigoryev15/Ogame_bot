@@ -6,7 +6,6 @@ from Elements.WebElement import WebElement
 
 
 class LoginScreen(BaseScreen):
-
     def __init__(self):
         BaseScreen.__init__(self, '//*[@id="loginRegisterTabs"]')
 

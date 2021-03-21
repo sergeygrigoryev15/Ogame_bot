@@ -5,7 +5,6 @@ from Core.BaseEntity import BaseEntity
 
 
 class BaseElement(BaseEntity):
-
     def __init__(self, identifier, id_type=By.XPATH):
         BaseEntity.__init__(self)
         self.identifier = identifier

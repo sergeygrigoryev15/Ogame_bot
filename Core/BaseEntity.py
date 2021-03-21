@@ -15,7 +15,6 @@ database = None
 
 
 class BaseEntity(object):
-
     def __init__(self):
         self.URL = 'http://ogame.ru'
         self.slack_bot = bot
@@ -30,8 +29,10 @@ class BaseEntity(object):
         if web_driver:
             return web_driver
         else:
-            web_driver = webdriver.Chrome(os.path.abspath(__file__) + '/../../resources/chromedriver.exe',
-                                          chrome_options=self.chrome_options)
+            web_driver = webdriver.Chrome(
+                os.path.abspath(__file__) + '/../../resources/chromedriver.exe',
+                chrome_options=self.chrome_options,
+            )
         return web_driver
 
     @property

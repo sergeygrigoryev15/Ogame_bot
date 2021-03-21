@@ -7,7 +7,6 @@ TIMEOUT = 60
 
 
 class BaseScreen(BaseEntity):
-
     def __init__(self, xpath):
         BaseEntity.__init__(self)
         self.xpath = xpath
@@ -22,4 +21,6 @@ class BaseScreen(BaseEntity):
             except Exception:
                 continue
         else:
-            raise AssertionError(f'Screen {self.__class__.__name__} was not opened in {timeout} seconds')
+            raise AssertionError(
+                f'Screen {self.__class__.__name__} was not opened in {timeout} seconds'
+            )

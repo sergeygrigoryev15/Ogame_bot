@@ -12,7 +12,6 @@ class Color:
 
 
 class Painter:
-
     @staticmethod
     def colored_text(text, color):
         if not color:
@@ -29,7 +28,6 @@ class LogLevel:
 
 
 class Logger:
-
     def __init__(self, print_buffer=None):
         self.print_buffer = print_buffer if print_buffer else []
 

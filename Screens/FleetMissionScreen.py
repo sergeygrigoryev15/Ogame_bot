@@ -6,12 +6,13 @@ from Screens.BaseOgameScreen import BaseOgameScreen
 
 
 class FleetMissionScreen(BaseOgameScreen):
-
     def __init__(self):
         BaseOgameScreen.__init__(self, '//*[@id="fleet3"]')
 
         self.mission_type_template = '//*[@id="missions"]//*[@data-mission={}]'
-        self.selected_mission_type = '//*[@id="missions"]//a[contains(@class, "selected")]'
+        self.selected_mission_type = (
+            '//*[@id="missions"]//a[contains(@class, "selected")]'
+        )
 
         self.btn_all_resources = WebElement('allresources', id_type=By.ID)
         self.btn_send_fleet = WebElement('sendFleet', id_type=By.ID)

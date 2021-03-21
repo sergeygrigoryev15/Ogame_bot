@@ -19,27 +19,35 @@ class BattleEvent(object):
         self.is_return = self.element.get_attribute('data-return-flight') == 'true'
 
         self.is_friendly = 'friendly' in self.element.find_element_by_xpath(
-            self.additionalXpathPattern.format('countDown') + '/*[contains(@id, "counter-eventlist")]')\
-            .get_attribute('class')
+            self.additionalXpathPattern.format('countDown')
+            + '/*[contains(@id, "counter-eventlist")]'
+        ).get_attribute('class')
 
-        self.arrival_time = datetime.fromtimestamp(int(self.element.get_attribute('data-arrival-time')))
+        self.arrival_time = datetime.fromtimestamp(
+            int(self.element.get_attribute('data-arrival-time'))
+        )
 
         self.remaining_time = self.arrival_time - datetime.now()
 
         self.from_planet = self.element.find_element_by_xpath(
-            self.additionalXpathPattern.format('originFleet')).get_text()
+            self.additionalXpathPattern.format('originFleet')
+        ).get_text()
 
         self.from_coordinates = self.element.find_element_by_xpath(
-            self.additionalXpathPattern.format('coordsOrigin')).get_text()
+            self.additionalXpathPattern.format('coordsOrigin')
+        ).get_text()
 
         self.to_planet = self.element.find_element_by_xpath(
-            self.additionalXpathPattern.format('destFleet')).get_text()
+            self.additionalXpathPattern.format('destFleet')
+        ).get_text()
 
         self.to_coordinates = self.element.find_element_by_xpath(
-            self.additionalXpathPattern.format('destCoords')).get_text()
+            self.additionalXpathPattern.format('destCoords')
+        ).get_text()
 
         self.fleet_size = self.element.find_element_by_xpath(
-            self.additionalXpathPattern.format('detailsFleet')).get_int()
+            self.additionalXpathPattern.format('detailsFleet')
+        ).get_int()
 
     def __str__(self):
         return {
@@ -52,12 +60,11 @@ class BattleEvent(object):
             'to_coordinates': self.to_coordinates,
             'fleet_size': self.fleet_size,
             'is_friendly': self.is_friendly,
-            'remaining_time': str(self.remaining_time)
+            'remaining_time': str(self.remaining_time),
         }
 
 
 class FleetAlertsTab(WebElement):
-
     def __init__(self):
         self.xpath = '//div[@id="message-wrapper"]'
         WebElement.__init__(self, self.xpath)
@@ -98,7 +105,10 @@ class FleetAlertsTab(WebElement):
 
     @property
     def event_log(self):
-        return [BattleEvent(el) for el in WebElement("//*[contains(@id, 'eventContent')]//tr").elements]
+        return [
+            BattleEvent(el)
+            for el in WebElement("//*[contains(@id, 'eventContent')]//tr").elements
+        ]
 
     def get_log(self):
         if self.empty_fleet_list.is_present():

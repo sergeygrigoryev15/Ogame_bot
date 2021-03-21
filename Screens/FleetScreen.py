@@ -5,7 +5,6 @@ from Screens.BaseOgameScreen import BaseOgameScreen
 
 
 class FleetScreen(BaseOgameScreen):
-
     def __init__(self):
         BaseOgameScreen.__init__(self, '//*[@id="fleet1"]')
 

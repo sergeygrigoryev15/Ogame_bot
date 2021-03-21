@@ -6,7 +6,6 @@ from Screens.OverviewScreen import OverviewScreen
 
 
 class Test(BaseTest):
-
     def run_test(self):
         login_screen = LoginScreen()
         login_screen.login()

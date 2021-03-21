@@ -4,7 +4,6 @@ from Elements.WebElement import WebElement
 
 
 class PlanetsList(WebElement):
-
     def __init__(self):
         self.xpath = '//div[@id="planetList"]'
         WebElement.__init__(self, self.xpath)
@@ -12,7 +11,11 @@ class PlanetsList(WebElement):
         self.planet_template = self.xpath + '//a[contains(@class, "planetlink")]'
         self.planet_name = './*[contains(@class, "planet-name")]'
         self.planet_koords = './*[contains(@class, "planet-koords")]'
-        self.selected_planet = self.planet_template + '[contains(@class, "active")]' + self.planet_koords[1:]
+        self.selected_planet = (
+            self.planet_template
+            + '[contains(@class, "active")]'
+            + self.planet_koords[1:]
+        )
 
     @property
     def data(self):
@@ -30,7 +33,10 @@ class PlanetsList(WebElement):
     def select_planet(self, planet):
         if self.active_planet != planet:
             for _ in range(5):
-                WebElement(self.xpath + f'/*[contains(@id, "planet-")][./*[contains(.,"{planet}")]]').click()
+                WebElement(
+                    self.xpath
+                    + f'/*[contains(@id, "planet-")][./*[contains(.,"{planet}")]]'
+                ).click()
                 time.sleep(2)
                 if self.active_planet == planet:
                     break

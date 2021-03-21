@@ -3,13 +3,17 @@ from Enums.MenuTabs import MenuTabs
 
 
 class NavigationMenu(WebElement):
-
     def __init__(self):
         self.xpath = '//*[@id="menuTable"]'
         WebElement.__init__(self, self.xpath)
 
-        self.menu_item_template = self.xpath + '//a[contains(@class, "menubutton")]/*[contains(., "{}")]'
-        self.active_menu_item = self.xpath + '//a[contains(@class, "menubutton") and contains(@class, "selected")]/*[@class="textlabel"]'
+        self.menu_item_template = (
+            self.xpath + '//a[contains(@class, "menubutton")]/*[contains(., "{}")]'
+        )
+        self.active_menu_item = (
+            self.xpath
+            + '//a[contains(@class, "menubutton") and contains(@class, "selected")]/*[@class="textlabel"]'
+        )
 
         self.fleet_movements_tab_path = '//*[contains(@class, "fleet1")]'
 

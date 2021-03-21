@@ -8,7 +8,6 @@ from Screens.BaseOgameScreen import BaseOgameScreen
 
 
 class FleetDestinationScreen(BaseOgameScreen):
-
     def __init__(self):
         BaseOgameScreen.__init__(self, '//*[@id="fleet2"]')
 
@@ -32,7 +31,9 @@ class FleetDestinationScreen(BaseOgameScreen):
 
     @property
     def speed(self):
-        return WebElement(self.speed_template + '[contains(@class, "selected")]').get_text()
+        return WebElement(
+            self.speed_template + '[contains(@class, "selected")]'
+        ).get_text()
 
     def select_destination(self, planet, object_type: ObjectTypes = ObjectTypes.PLANET):
         WebElement(f'{object_type.value}button', id_type=By.ID).click()

@@ -9,7 +9,6 @@ from Core.BaseElement import BaseElement
 
 
 class WebElement(BaseElement):
-
     def __init__(self, identifier=None, id_type=By.XPATH, element=None):
         BaseElement.__init__(self, identifier, id_type)
         if element:
@@ -70,5 +69,7 @@ class WebElement(BaseElement):
 
     @property
     def elements(self):
-        return [WebElement(identifier=self.identifier, id_type=self.id_type, element=el) for el in
-                self.driver.find_elements(self.id_type, self.identifier)]
+        return [
+            WebElement(identifier=self.identifier, id_type=self.id_type, element=el)
+            for el in self.driver.find_elements(self.id_type, self.identifier)
+        ]

@@ -17,23 +17,33 @@ class FleetMovementInfo:
         self.arrival_time = self.element.get_attribute('data-arrival-time')
 
         self.from_planet = self.element.find_element_by_xpath(
-            '.' + self.additionalXpathPattern.format('originData') +
-            self.additionalXpathPattern.format('originPlanet')).get_text()
+            '.'
+            + self.additionalXpathPattern.format('originData')
+            + self.additionalXpathPattern.format('originPlanet')
+        ).get_text()
 
         self.from_coordinates = self.element.find_element_by_xpath(
-            '.' + self.additionalXpathPattern.format('originData') +
-            self.additionalXpathPattern.format('originCoords')).get_text()
+            '.'
+            + self.additionalXpathPattern.format('originData')
+            + self.additionalXpathPattern.format('originCoords')
+        ).get_text()
 
         self.to_planet = self.element.find_element_by_xpath(
-            '.' + self.additionalXpathPattern.format('destinationData') +
-            self.additionalXpathPattern.format('destinationPlanet')).get_text()
+            '.'
+            + self.additionalXpathPattern.format('destinationData')
+            + self.additionalXpathPattern.format('destinationPlanet')
+        ).get_text()
 
         self.to_coordinates = self.element.find_element_by_xpath(
-            '.' + self.additionalXpathPattern.format('destinationData') +
-            self.additionalXpathPattern.format('destinationCoords')).get_text()
+            '.'
+            + self.additionalXpathPattern.format('destinationData')
+            + self.additionalXpathPattern.format('destinationCoords')
+        ).get_text()
 
-        self.btn_reverse =\
-            WebElement(f'//*[@id="{self.base_id}"]' + self.additionalXpathPattern.format('reversal'))
+        self.btn_reverse = WebElement(
+            f'//*[@id="{self.base_id}"]'
+            + self.additionalXpathPattern.format('reversal')
+        )
 
     def reverse(self):
         self.btn_reverse.click()
@@ -46,12 +56,11 @@ class FleetMovementInfo:
             'from_planet': self.from_planet,
             'from_coordinates': self.from_coordinates,
             'to_planet': self.to_planet,
-            'to_coordinates': self.to_coordinates
+            'to_coordinates': self.to_coordinates,
         }
 
 
 class FleetMovementsScreen(BaseOgameScreen):
-
     def __init__(self):
         BaseOgameScreen.__init__(self, '//*[@id="movement"]')
 
@@ -64,7 +73,9 @@ class FleetMovementsScreen(BaseOgameScreen):
 
     @property
     def event_log(self):
-        return [FleetMovementInfo(el) for el in WebElement(self.fleet_details_elem).elements]
+        return [
+            FleetMovementInfo(el) for el in WebElement(self.fleet_details_elem).elements
+        ]
 
     def get_log(self):
         return [el.__str__() for el in self.event_log]
@@ -72,7 +83,12 @@ class FleetMovementsScreen(BaseOgameScreen):
     def return_fleet(self, **fleet_data):
         log = self.event_log
         log = filter(lambda el: el.btn_reverse.is_present(), log)
-        for param in ['from_coordinates', 'to_coordinates', 'mission_type', 'arrival_time']:
+        for param in [
+            'from_coordinates',
+            'to_coordinates',
+            'mission_type',
+            'arrival_time',
+        ]:
             if param in fleet_data.keys():
                 value = fleet_data[param]
                 log = list(filter(lambda el: el.__str__()[param] == value, log))

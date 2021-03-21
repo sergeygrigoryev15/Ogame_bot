@@ -6,7 +6,6 @@ from Elements.ResourcesTab import ResourcesTab
 
 
 class BaseOgameScreen(BaseScreen):
-
     def __init__(self, xpath):
         BaseScreen.__init__(self, xpath)
 

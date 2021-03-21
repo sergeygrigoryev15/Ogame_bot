@@ -7,7 +7,6 @@ from Core.BaseTest import BaseTest
 
 
 class BaseInfiniteTest(BaseTest):
-
     def __init__(self):
         BaseTest.__init__(self)
         self.TIMEOUT = 60 * 2
@@ -26,7 +25,9 @@ class BaseInfiniteTest(BaseTest):
             try:
                 self.main_loop()
             except Exception:
-                self.slack_bot.send_message(traceback.format_exc(), channel=SlackChannels.ALERTS)
+                self.slack_bot.send_message(
+                    traceback.format_exc(), channel=SlackChannels.ALERTS
+                )
                 traceback.print_exc(file=sys.stdout)
             self.logger.add(f'sleep {self.TIMEOUT} seconds')
             self.logger.print_all()
