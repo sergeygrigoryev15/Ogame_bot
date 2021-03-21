@@ -43,7 +43,7 @@ class BattleEvent(object):
 
     def __str__(self):
         return {
-            'mission_type': FleetMissionTypes.get_by_name(self.mission_type),
+            'mission_type': FleetMissionTypes(self.mission_type),
             'is_return': self.is_return,
             'arrival_time': self.arrival_time.strftime(DATE_FORMAT),
             'from_planet': self.from_planet,
@@ -82,7 +82,7 @@ class FleetAlertsTab(WebElement):
 
     def __expand(self):
         if not self.expanded:
-            for _ in xrange(5):
+            for _ in range(5):
                 WebElement(self.xpath).click()
                 time.sleep(2)
                 if self.expanded:
@@ -90,7 +90,7 @@ class FleetAlertsTab(WebElement):
 
     def __collapse(self):
         if self.expanded:
-            for _ in xrange(5):
+            for _ in range(5):
                 WebElement(self.xpath).click()
                 time.sleep(2)
                 if not self.expanded:

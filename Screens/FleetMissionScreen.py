@@ -17,7 +17,7 @@ class FleetMissionScreen(BaseOgameScreen):
         self.btn_send_fleet = WebElement('sendFleet', id_type=By.ID)
 
     def select_mission_type(self, mission_type=FleetMissionTypes.TRANSPORT):
-        WebElement(self.mission_type_template.format(mission_type)).click()
+        WebElement(self.mission_type_template.format(mission_type.value)).click()
 
     @property
     def selected_mission(self):

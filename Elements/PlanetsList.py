@@ -19,8 +19,8 @@ class PlanetsList(WebElement):
         data = {}
         for element in WebElement(self.planet_template).elements:
             name = element.find_element_by_xpath(self.planet_name).get_text()
-            koordinate = element.find_element_by_xpath(self.planet_koords).get_text().encode('utf-8')
-            data[koordinate] = name
+            coordinate = element.find_element_by_xpath(self.planet_koords).get_text()
+            data[coordinate] = name
         return data
 
     @property
@@ -29,8 +29,8 @@ class PlanetsList(WebElement):
 
     def select_planet(self, planet):
         if self.active_planet != planet:
-            for _ in xrange(5):
-                WebElement(self.xpath + '/*[contains(@id, "planet-")][./*[contains(.,"{}")]]'.format(planet)).click()
+            for _ in range(5):
+                WebElement(self.xpath + f'/*[contains(@id, "planet-")][./*[contains(.,"{planet}")]]').click()
                 time.sleep(2)
                 if self.active_planet == planet:
                     break

@@ -1,4 +1,4 @@
-from Core.Enum import Enum
+from enum import Enum
 
 
 class Resources(Enum):
@@ -7,5 +7,3 @@ class Resources(Enum):
     DEUTERIUM = 'deuterium'
     DARK_MATTER = 'darkmatter'
     ENERGY = 'energy'
-
-    ALL = [METAL, CRYSTAL, DEUTERIUM, DARK_MATTER, ENERGY]

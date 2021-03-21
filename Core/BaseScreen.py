@@ -22,4 +22,4 @@ class BaseScreen(BaseEntity):
             except Exception:
                 continue
         else:
-            raise AssertionError('Screen {} was not opened in {} seconds'.format(self.__class__.__name__, timeout))
+            raise AssertionError(f'Screen {self.__class__.__name__} was not opened in {timeout} seconds')

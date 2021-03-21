@@ -1,5 +1,4 @@
-# coding=utf-8
-from Core.Enum import Enum
+from enum import Enum
 
 
 class MenuTabs(Enum):
@@ -13,5 +12,3 @@ class MenuTabs(Enum):
     GALAXY = 'Галактика'
     ALIANCE = 'Альянс'
     FLEET_MOVEMENTS = 'Fleet Movements'
-
-    ALL = [OVERVIEW, RESOURCES, FABRIKS, RESEARCH, DOCK, DEFENCE, FLEET, GALAXY, ALIANCE]

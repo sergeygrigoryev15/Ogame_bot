@@ -13,14 +13,14 @@ class NavigationMenu(WebElement):
 
         self.fleet_movements_tab_path = '//*[contains(@class, "fleet1")]'
 
-    def open_tab(self, tab):
+    def open_tab(self, tab: MenuTabs):
         if tab == MenuTabs.FLEET_MOVEMENTS:
             element = WebElement(self.fleet_movements_tab_path)
         else:
-            element = WebElement(self.menu_item_template.format(tab))
+            element = WebElement(self.menu_item_template.format(tab.value))
         element.click()
 
     @property
     def active_tab(self):
         element = WebElement(self.active_menu_item)
-        return MenuTabs.get_by_name(element.get_text())
+        return MenuTabs(element.get_text())

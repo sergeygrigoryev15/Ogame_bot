@@ -2,8 +2,10 @@ import os
 import time
 import re
 from collections import deque
+from loguru import logger
 
-from slackclient import SlackClient
+from slack import WebClient
+from slack.errors import SlackApiError
 
 from Bot.SlackChannels import SlackChannels
 
@@ -16,17 +18,23 @@ class SlackBot(object):
     MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 
     def __init__(self):
-        self.client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
+        self.client = WebClient(os.environ.get('SLACK_BOT_TOKEN'))
         self.connect()
         self.user_id = self.client.api_call("auth.test")["user_id"]
 
     def connect(self):
-        res = self.client.rtm_connect(with_team_state=False)
-        print 'Bot is connected and running' if res else 'Connection failed. Exception traceback printed above.'
+        if res := self.client.rtm_connect(with_team_state=False):
+            logger.info('Bot is connected and running')
+        else:
+            logger.error('Connection failed. Exception traceback printed above.')
         return res
 
-    def send_message(self, message, channel=SlackChannels.OGBOT):
-        self.client.api_call("chat.postMessage", channel=channel, text=message)
+    def send_message(self, message, channel: SlackChannels = SlackChannels.OGBOT):
+        try:
+            logger.debug(f'Sending message "{message}" to "{channel}" channel.')
+            self.client.chat_postMessage(channel=channel.value, text=message)
+        except SlackApiError as e:
+            logger.error(f'Error while sending message "{e.response["error"]}"')
 
     def parse_bot_commands(self, slack_events):
         for event in slack_events:
@@ -42,14 +50,14 @@ class SlackBot(object):
 
     def handle_command(self, command, channel):
         global slackCommands
-        default_response = "Not sure what you mean. Try *{}*.".format(self.EXAMPLE_COMMAND)
+        default_response = f'Not sure what you mean. Try *{self.EXAMPLE_COMMAND}*.'
         response = None
         if command.startswith(self.EXAMPLE_COMMAND):
             instr = command[len(self.EXAMPLE_COMMAND):].strip()
             slackCommands.append(instr)
-            response = "Command '{}' added to queue".format(instr)
-        elif command == "print queue":
-            response = "Queue = {}".format(slackCommands)
+            response = f'Command "{instr}" added to queue'
+        elif command == 'print queue':
+            response = f'Queue = {slackCommands}'
         self.send_message(response if response else default_response, channel)
 
 

@@ -1,5 +1,4 @@
-# coding=utf-8
-from Core.Enum import Enum
+from enum import Enum
 
 
 class FleetMissionTypes(Enum):
@@ -8,5 +7,3 @@ class FleetMissionTypes(Enum):
     LEAVE = '4'
     ESPIONAGE = '6'
     EXPEDITION = '15'
-
-    ALL = [ATTACK, TRANSPORT, LEAVE, ESPIONAGE, EXPEDITION]

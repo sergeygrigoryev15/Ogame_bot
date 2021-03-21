@@ -15,11 +15,11 @@ class Test(BaseTest):
         hub_screen.continue_game()
 
         overview_screen = OverviewScreen()
-        print overview_screen.resources_tab.data
+        print(overview_screen.resources_tab.data)
         overview_screen.navigation_menu.open_tab(MenuTabs.RESOURCES)
-        print overview_screen.navigation_menu.active_tab
-        print overview_screen.planets_list.active_planet
-        print overview_screen.planets_list.data
+        print(overview_screen.navigation_menu.active_tab)
+        print(overview_screen.planets_list.active_planet)
+        print(overview_screen.planets_list.data)
 
 
 if __name__ == '__main__':

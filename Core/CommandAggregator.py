@@ -20,4 +20,4 @@ class CommandAggregator(object):
 
 if __name__ == '__main__':
     a = CommandAggregator()
-    print a.supported_methods
+    print(a.supported_methods)

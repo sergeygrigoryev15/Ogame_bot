@@ -4,7 +4,7 @@ from Enums.QueueTypes import QueueTypes
 
 class NowInProgressElement(object):
 
-    def __init__(self, queue_types=QueueTypes.ALL):
+    def __init__(self, queue_types: QueueTypes = QueueTypes):
         self.queue_types = queue_types
         self.__elements = {}
         self.__init()
@@ -14,7 +14,7 @@ class NowInProgressElement(object):
             self.__elements[el] = QueueElement(el)
 
     def __getitem__(self, item):
-        if item in self.__elements.keys():
+        if item in self.__elements:
             return self.__elements.get(item)()
 
 
@@ -22,7 +22,7 @@ class QueueElement(WebElement):
 
     def __init__(self, queue_type):
         self.base_xpath = '//*[@class="content-box-s"]'
-        self.xpath = self.base_xpath + '[./*[@class="header" and contains(., "{}")]]'.format(queue_type)
+        self.xpath = self.base_xpath + f'[./*[@class="header" and contains(., "{queue_type}")]]'
         WebElement.__init__(self, self.xpath)
 
     def __call__(self):

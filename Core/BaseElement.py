@@ -23,7 +23,7 @@ class BaseElement(BaseEntity):
     def x_path(self):
         if self.id_type is By.XPATH:
             return self.identifier
-        return '//*[@{}="{}"]'.format(self.id_type, self.identifier)
+        return f'//*[@{self.id_type}="{self.identifier}"]'
 
     def hover_mouse(self):
         action = ActionChains(self.driver).move_to_element(self.element)

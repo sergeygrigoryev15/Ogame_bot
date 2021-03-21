@@ -4,7 +4,7 @@ from Elements.WebElement import WebElement
 from Screens.BaseOgameScreen import BaseOgameScreen
 
 
-class FleetMovementInfo(object):
+class FleetMovementInfo:
     def __init__(self, element):
         self.element = element
         self.additionalXpathPattern = "/*[contains(@class, '{}')]"
@@ -33,7 +33,7 @@ class FleetMovementInfo(object):
             self.additionalXpathPattern.format('destinationCoords')).get_text()
 
         self.btn_reverse =\
-            WebElement('//*[@id="{}"]'.format(self.base_id) + self.additionalXpathPattern.format('reversal'))
+            WebElement(f'//*[@id="{self.base_id}"]' + self.additionalXpathPattern.format('reversal'))
 
     def reverse(self):
         self.btn_reverse.click()
@@ -75,7 +75,7 @@ class FleetMovementsScreen(BaseOgameScreen):
         for param in ['from_coordinates', 'to_coordinates', 'mission_type', 'arrival_time']:
             if param in fleet_data.keys():
                 value = fleet_data[param]
-                log = filter(lambda el: el.__str__()[param] == value, log)
+                log = list(filter(lambda el: el.__str__()[param] == value, log))
                 if log and len(log) == 1:
                     log[0].reverse()
                     break

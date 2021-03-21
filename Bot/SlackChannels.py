@@ -1,5 +1,7 @@
+from enum import Enum
 
-class SlackChannels(object):
+
+class SlackChannels(Enum):
 
     ALERTS = 'CR57K6STS'
     GENERAL = 'CR51HNQ6L'

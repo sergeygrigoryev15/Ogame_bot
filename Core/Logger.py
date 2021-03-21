@@ -1,7 +1,8 @@
 from prettytable import PrettyTable
+from loguru import logger
 
 
-class Color(object):
+class Color:
     RED = "\033[1;31;48m"  # RED
     GREEN = "\033[1;32;48m"  # GREEN
     YELLOW = "\033[1;33;48m"  # Yellow
@@ -10,16 +11,16 @@ class Color(object):
     NONE = "\033[0m"
 
 
-class Painter(object):
+class Painter:
 
     @staticmethod
     def colored_text(text, color):
         if not color:
             return text
-        return '{} {} {}'.format(color, text, Color.NONE)
+        return f'{color} {text} {Color.NONE}'
 
 
-class LogLevel(object):
+class LogLevel:
     DEBUG = None
     WARNING = Color.YELLOW
     ERROR = Color.RED
@@ -27,7 +28,7 @@ class LogLevel(object):
     ALL = [DEBUG, WARNING, ERROR]
 
 
-class Logger(object):
+class Logger:
 
     def __init__(self, print_buffer=None):
         self.print_buffer = print_buffer if print_buffer else []
@@ -41,7 +42,7 @@ class Logger(object):
         self.print_buffer = []
 
     def log(self, text, log_level=LogLevel.DEBUG):
-        print Painter.colored_text(text, log_level)
+        logger.log(Painter.colored_text(text, log_level))
 
     def debug(self, text):
         self.log(text)

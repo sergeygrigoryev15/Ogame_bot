@@ -28,14 +28,14 @@ class FleetDestinationScreen(BaseOgameScreen):
         self.btn_continue.click()
 
     def select_speed(self, speed):
-        WebElement(self.speed_template + '[.="{}"]'.format(speed)).click()
+        WebElement(self.speed_template + f'[.="{speed}"]').click()
 
     @property
     def speed(self):
         return WebElement(self.speed_template + '[contains(@class, "selected")]').get_text()
 
-    def select_destination(self, planet, object_type=ObjectTypes.PLANET):
-        WebElement('{}button'.format(object_type), id_type=By.ID).click()
+    def select_destination(self, planet, object_type: ObjectTypes = ObjectTypes.PLANET):
+        WebElement(f'{object_type.value}button', id_type=By.ID).click()
         if isinstance(planet, str):
             self.select_planet.click()
             time.sleep(2)

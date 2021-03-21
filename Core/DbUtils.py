@@ -3,7 +3,7 @@ import sqlite3
 DATABASE_NAME = 'ogame.sqlite'
 
 
-class DbUtils(object):
+class DbUtils:
 
     def __init__(self):
         self.connection = sqlite3.connect(DATABASE_NAME)
@@ -11,7 +11,6 @@ class DbUtils(object):
         self.init()
 
     def init(self):
-        # for sql in [self.create_users, self.create_planets, self.create_items, self.create_resources, self.create_queues, self.save_fleet]:
         for sql in [self.create_save_fleet_queue, self.create_return_fleet_queue]:
             self.cursor.execute(sql)
         self.connection.commit()

@@ -1,3 +1,5 @@
+from loguru import logger
+
 from Elements.WebElement import WebElement
 from Enums.Resources import Resources
 
@@ -14,16 +16,16 @@ class ResourcesTab(WebElement):
         self.tooltip_template = '//*[contains(@class, "tooltip")][.//*[contains(@style, "visible")]]//*[@class="htmlTooltip"]//table'
         self.element_in_tooltip_template = '(' + self.tooltip_template + '//td)[{}]/span'
 
-    def get_current_count(self, resource_type):
-        element = WebElement(self.resource_value_template.format(resource_type=resource_type))
+    def get_current_count(self, resource_type: Resources):
+        element = WebElement(self.resource_value_template.format(resource_type=resource_type.value))
         value = element.get_int()
         return value
 
-    def __open_tooltip(self, resource_type):
-        element = WebElement(self.resource_value_template.format(resource_type=resource_type))
+    def __open_tooltip(self, resource_type: Resources):
+        element = WebElement(self.resource_value_template.format(resource_type=resource_type.value))
         element.hover_mouse()
 
-    def get_main_resource_info(self, resource):
+    def get_main_resource_info(self, resource: Resources):
         data = {}
         self.__open_tooltip(resource)
         storage_capacity = WebElement(self.element_in_tooltip_template.format(2))
@@ -60,8 +62,10 @@ class ResourcesTab(WebElement):
                 tmp_data.update(**self.get_main_resource_info(r))
             elif r == Resources.DARK_MATTER:
                 tmp_data.update(**self.get_dark_matter_info())
-            else:
+            elif r == Resources.ENERGY:
                 tmp_data.update(**self.get_energy_info())
+            else:
+                logger.warning(f'Unsupported resource type "{r}"')
             self.resources_data.update({r: tmp_data})
 
     @property
