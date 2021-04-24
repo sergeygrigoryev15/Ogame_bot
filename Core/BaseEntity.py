@@ -1,9 +1,12 @@
-import os
+import re
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import chromedriver_autoinstaller
 
 from Bot.SlackBot import bot
 from Core.DbUtils import DbUtils
+from Core.HttpUtils import HttpUtils
 from Core.Env import environ, env
 from Core.Logger import Logger
 
@@ -13,6 +16,12 @@ web_driver = None
 global database
 database = None
 
+global httpClient
+httpClient = None
+
+
+chromedriver_autoinstaller.install()
+
 
 class BaseEntity(object):
     def __init__(self):
@@ -20,7 +29,7 @@ class BaseEntity(object):
         self.slack_bot = bot
         self.logger = Logger()
         self.chrome_options = Options()
-        if environ(env.bool, 'HEADLESS', False):
+        if environ('HEADLESS', env.bool, False):
             self.chrome_options.add_argument("--headless")
 
     @property
@@ -29,10 +38,7 @@ class BaseEntity(object):
         if web_driver:
             return web_driver
         else:
-            web_driver = webdriver.Chrome(
-                os.path.abspath(__file__) + '/../../resources/chromedriver.exe',
-                chrome_options=self.chrome_options,
-            )
+            web_driver = webdriver.Chrome(chrome_options=self.chrome_options)
         return web_driver
 
     @property
@@ -41,6 +47,16 @@ class BaseEntity(object):
         if not database:
             database = DbUtils()
         return database
+
+    @property
+    def http(self):
+        global httpClient
+        if not httpClient:
+            url_reg = r'(http?s://.*com)/.*'
+            match = re.match(url_reg, self.driver.current_url)
+            assert match, f'Could not parse base url {self.driver.current_url}'
+            httpClient = HttpUtils(match.group(1))
+        return httpClient
 
     def init(self):
         self.driver.maximize_window()

@@ -28,6 +28,8 @@ class PlanetsList(WebElement):
 
     @property
     def active_planet(self):
+        if len(self.data) == 1:
+            return self.data.popitem()
         return WebElement(self.selected_planet).get_text()
 
     def select_planet(self, planet):

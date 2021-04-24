@@ -1,24 +1,20 @@
 from Core.BaseTest import BaseTest
 from Elements.NavigationMenu import MenuTabs
-from Screens.HubScreen import HubScreen
-from Screens.LoginScreen import LoginScreen
+from Enums.Resources import Resources
 from Screens.OverviewScreen import OverviewScreen
 
 
 class Test(BaseTest):
     def run_test(self):
-        login_screen = LoginScreen()
-        login_screen.login()
-
-        hub_screen = HubScreen()
-        hub_screen.continue_game()
-
         overview_screen = OverviewScreen()
-        print(overview_screen.resources_tab.data)
+        resources_data = overview_screen.resources_tab.data
+        parsed_data = [dict({'Type': name}, **value) for name, value in resources_data.items()]
+        self.logger.make_table([row for row in parsed_data if row.get('Type') in
+                                [Resources.METAL, Resources.CRYSTAL, Resources.DEUTERIUM]])
         overview_screen.navigation_menu.open_tab(MenuTabs.RESOURCES)
-        print(overview_screen.navigation_menu.active_tab)
-        print(overview_screen.planets_list.active_planet)
-        print(overview_screen.planets_list.data)
+        self.logger.info(overview_screen.navigation_menu.active_tab)
+        self.logger.info(overview_screen.planets_list.active_planet)
+        self.logger.info(overview_screen.planets_list.data)
 
 
 if __name__ == '__main__':

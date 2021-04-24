@@ -12,15 +12,13 @@ class SaveFleetTest(BaseInfiniteTest):
     SAVE_FLEET_TIMEOUT = timedelta(minutes=10)
 
     def main_loop(self):
-        self.logger.add('start loop')
+        self.logger.debug('start loop')
         overview_screen = OverviewScreen()
         log = overview_screen.fleetAlertsTab.get_log()
         if log:
-            self.logger.add('log = ')
-            self.logger.add(
-                self.logger.make_table(
-                    [el.__str__() for el in log], coloring={'is_friendly': lambda x: x}
-                )
+            self.logger.debug('log = ')
+            self.logger.make_table(
+                [el.__str__() for el in log], coloring={'is_friendly': lambda x: x}
             )
         enemy_fleets = filter(
             lambda el: el.is_friendly is False
@@ -36,7 +34,7 @@ class SaveFleetTest(BaseInfiniteTest):
                 )
                 commands.save_fleet(fleet.to_coordinates)
         commands.return_fleet()
-        self.logger.add('end loop')
+        self.logger.debug('end loop')
 
 
 if __name__ == '__main__':

@@ -18,13 +18,14 @@ class SlackBot(object):
     MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 
     def __init__(self):
-        token = environ(env.str, 'SLACK_BOT_TOKEN')
+        token = environ('SLACK_BOT_TOKEN')
         self.client = WebClient(token)
         self.connect()
         self.user_id = self.client.api_call("auth.test")["user_id"]
 
     def connect(self):
-        if res := self.client.rtm_connect(with_team_state=False):
+        res = self.client.rtm_connect(with_team_state=False)
+        if res:
             logger.info('Bot is connected and running')
         else:
             logger.error('Connection failed. Exception traceback printed above.')

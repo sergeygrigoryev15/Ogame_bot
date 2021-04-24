@@ -1,77 +1,71 @@
 from prettytable import PrettyTable
 from loguru import logger
+from enum import Enum
 
 
-class Color:
-    RED = "\033[1;31;48m"  # RED
-    GREEN = "\033[1;32;48m"  # GREEN
-    YELLOW = "\033[1;33;48m"  # Yellow
-    BLUE = "\033[1;34;48m"  # Blue
-
-    NONE = "\033[0m"
+class Color(Enum):
+    RED = 'r'
+    GREEN = 'g'
+    YELLOW = 'y'
+    BLUE = 'b'
+    WHITE = 'w'
 
 
 class Painter:
     @staticmethod
-    def colored_text(text, color):
+    def colored_text(text, color: Color) -> str:
         if not color:
             return text
-        return f'{color} {text} {Color.NONE}'
+        return f'<{color.value}>{text}</{color.value}>'
 
 
-class LogLevel:
-    DEBUG = None
-    WARNING = Color.YELLOW
-    ERROR = Color.RED
-
-    ALL = [DEBUG, WARNING, ERROR]
+class LogLevel(Enum):
+    DEBUG = logger.debug
+    WARNING = logger.warning
+    ERROR = logger.error
+    INFO = logger.info
 
 
 class Logger:
-    def __init__(self, print_buffer=None):
-        self.print_buffer = print_buffer if print_buffer else []
 
-    def add(self, element, log_level=LogLevel.DEBUG):
-        self.print_buffer.append((element, log_level))
+    @staticmethod
+    def info(text):
+        logger.info(text)
 
-    def print_all(self):
-        for element in self.print_buffer:
-            self.log(*element)
-        self.print_buffer = []
+    @staticmethod
+    def debug(text):
+        logger.debug(text)
 
-    def log(self, text, log_level=LogLevel.DEBUG):
-        logger.log(Painter.colored_text(text, log_level))
+    @staticmethod
+    def warning(text):
+        logger.warning(text)
 
-    def debug(self, text):
-        self.log(text)
+    @staticmethod
+    def error(text):
+        logger.error(text)
 
-    def warning(self, text):
-        self.log(text, log_level=LogLevel.WARNING)
-
-    def error(self, text):
-        self.log(text, log_level=LogLevel.ERROR)
-
-    def make_table(self, data, coloring=None):
+    @staticmethod
+    def make_table(table_data, coloring=None):
         """
         Makes table to print. input data should be a list of dicts
         Coloring is a dict like {'a': lambda x:x>1} will appeal to column named 'a'
         """
         table = PrettyTable()
-        table.field_names = data[0].keys()
+        table.field_names = table_data[0].keys()
         if coloring:
-            for row in data:
-                for key, value in coloring.iteritems():
-                    text = row.get(key)
+            for row in table_data:
+                for key, value in coloring.items():
+                    text = row.get(key, '-')
                     color = Color.GREEN if value(text) else Color.RED
                     row[key] = Painter.colored_text(text, color)
-        for row in data:
+        for row in table_data:
             table.add_row(row.values())
-        return table
+        logger.opt(colors=True).info(f'\n{table}')
 
 
 if __name__ == "__main__":
     data = [{'a': 12, 'b': 'asd'}, {'a': 1, 'b': 'aeufheipouhf'}]
-    logger = Logger()
-    logger.warning('This is warning')
-    logger.error('Error message')
-    logger.log(logger.make_table(data, coloring={'a': lambda x: x > 3}))
+    Logger.warning('This is warning')
+    Logger.error('Error message')
+    Logger.debug('Debug message')
+    Logger.make_table(data, coloring={'a': lambda x: x > 3})

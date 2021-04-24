@@ -1,4 +1,4 @@
-from selenium.webdriver.common.by import By
+import re
 
 from Elements.WebElement import WebElement
 from Screens.BaseOgameScreen import BaseOgameScreen
@@ -45,6 +45,14 @@ class FleetMovementInfo:
             + self.additionalXpathPattern.format('reversal')
         )
 
+    @property
+    def id(self):
+        regex = r'fleet(\d+)'
+        match = re.match(regex, self.base_id)
+        if match:
+            return match.group(1)
+        return self.base_id
+
     def reverse(self):
         self.btn_reverse.click()
 
@@ -82,7 +90,7 @@ class FleetMovementsScreen(BaseOgameScreen):
 
     def return_fleet(self, **fleet_data):
         log = self.event_log
-        log = filter(lambda el: el.btn_reverse.is_present(), log)
+        log = filter(lambda fleet_object: fleet_object.btn_reverse.is_present(), log)
         for param in [
             'from_coordinates',
             'to_coordinates',
@@ -91,7 +99,9 @@ class FleetMovementsScreen(BaseOgameScreen):
         ]:
             if param in fleet_data.keys():
                 value = fleet_data[param]
-                log = list(filter(lambda el: el.__str__()[param] == value, log))
+                log = list(filter(lambda fleet_object: fleet_object.__str__()[param] == value, log))
                 if log and len(log) == 1:
-                    log[0].reverse()
-                    break
+                    self.http.return_fleet(log[0].id)
+                    return
+        for el in log:
+            self.http.return_fleet(el.id)

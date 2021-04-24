@@ -1,4 +1,3 @@
-# coding=utf-8
 import re
 from datetime import datetime
 
@@ -15,10 +14,13 @@ class WebElement(BaseElement):
             self.__setattr__('web_element', element)
 
     def click(self):
-        try:
-            self.element.click()
-        except Exception:
-            self.click_via_js()
+
+        for action in [self.element.click, self.click_via_js]:
+            try:
+                action()
+                break
+            except Exception:
+                continue
 
     def click_via_js(self):
         self.driver.execute_script('arguments[0].click();', self.element)

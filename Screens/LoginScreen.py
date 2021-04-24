@@ -16,6 +16,6 @@ class LoginScreen(BaseScreen):
 
     def login(self, login=None, password=None):
         self.tab_login.click()
-        self.email.send_keys(login if login else environ(env.str, 'EMAIL'))
-        self.password.send_keys(password if password else environ(env.str, 'PASSWORD'))
+        self.email.send_keys(login if login else environ('EMAIL'))
+        self.password.send_keys(password if password else environ('PASSWORD'))
         self.submit.click()

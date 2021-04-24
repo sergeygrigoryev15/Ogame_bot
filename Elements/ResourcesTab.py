@@ -64,7 +64,7 @@ class ResourcesTab(WebElement):
         return data
 
     def init_data(self):
-        for r in Resources.ALL:
+        for r in Resources:
             tmp_data = {}
             tmp_data.update({'available': self.get_current_count(r)})
             if r in [Resources.METAL, Resources.CRYSTAL, Resources.DEUTERIUM]:
