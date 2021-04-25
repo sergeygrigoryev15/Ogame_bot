@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 
 from Core.BaseElement import BaseElement
@@ -14,7 +14,6 @@ class WebElement(BaseElement):
             self.__setattr__('web_element', element)
 
     def click(self):
-
         for action in [self.element.click, self.click_via_js]:
             try:
                 action()
@@ -50,15 +49,15 @@ class WebElement(BaseElement):
 
     def get_coordinates(self):
         text = self.element.text
-        coordRegex = r'^[(/d+):(/d+):(/d+)]$'
-        search = re.search(coordRegex, text)
+        coord_regex = r'^[(/d+):(/d+):(/d+)]$'
+        search = re.search(coord_regex, text)
         if search:
             return search.group(1), search.group(2), search.group(3)
 
     def is_present(self):
         try:
             elem = self.element
-        except NoSuchElementException:
+        except (NoSuchElementException, TimeoutException):
             return False
         return elem.is_displayed()
 

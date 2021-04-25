@@ -18,7 +18,6 @@ class HubScreen(BaseScreen):
 
     def continue_game(self):
         self.btn_continue.click()
-        window_after = self.driver.window_handles[-1]
         time.sleep(5)
         self.driver.close()
-        self.driver.switch_to_window(window_after)
+        self.driver.switch_to_window(self.driver.window_handles[-1])
