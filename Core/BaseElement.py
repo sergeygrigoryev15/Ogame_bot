@@ -19,9 +19,9 @@ class BaseElement(BaseEntity):
     @property
     def element(self):
         if not self.web_element:
-            self.web_element = WebDriverWait(self.driver, WAIT_ELEMENT_PRESENT_TIMEOUT).until(
-                EC.presence_of_element_located((self.id_type, self.identifier))
-            )
+            self.web_element = WebDriverWait(
+                self.driver, WAIT_ELEMENT_PRESENT_TIMEOUT
+            ).until(EC.presence_of_element_located((self.id_type, self.identifier)))
         return self.web_element
 
     @property

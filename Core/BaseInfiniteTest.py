@@ -6,6 +6,10 @@ from Bot.SlackChannels import SlackChannels
 from Core.BaseTest import BaseTest
 
 
+global stop
+stop = False
+
+
 class BaseInfiniteTest(BaseTest):
     def __init__(self):
         BaseTest.__init__(self)
@@ -15,11 +19,11 @@ class BaseInfiniteTest(BaseTest):
         pass
 
     def __call__(self):
-        iter = 1
+        iteration = 1
         self.init()
         self.before()
         while True:
-            self.logger.debug(f'iteration = {iter}')
+            self.logger.debug(f'iteration = {iteration}')
             self.driver.refresh()
             self.relogin()
             try:
@@ -31,5 +35,7 @@ class BaseInfiniteTest(BaseTest):
                 traceback.print_exc(file=sys.stdout)
             self.logger.debug(f'sleep {self.TIMEOUT} seconds')
             time.sleep(self.TIMEOUT)
-            iter += 1
-        self.finish()
+            iteration += 1
+            global stop
+            if stop:
+                self.finish()

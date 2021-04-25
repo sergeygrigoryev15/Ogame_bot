@@ -34,5 +34,12 @@ class GalaxyScreen(BaseOgameScreen):
 
     def get_planets(self):
         # TODO make this work properly
-        return [Planet([1, 29, 4], 'Planet1', False, False, PlanetOwner('Homeless', False, False, False))]
-
+        return [
+            Planet(
+                [1, 29, 4],
+                'Planet1',
+                False,
+                False,
+                PlanetOwner('Homeless', False, False, False),
+            )
+        ]

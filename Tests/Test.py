@@ -17,7 +17,9 @@ class Test(BaseInfiniteTest):
         log = overview_screen.fleetAlertsTab.get_log()
         if log:
             self.logger.debug('log = ')
-            self.logger.make_table([el.__str__() for el in log], coloring={'is_friendly': lambda x: x})
+            self.logger.make_table(
+                [el.__str__() for el in log], coloring={'is_friendly': lambda x: x}
+            )
         for fleet in [el for el in log if el.is_friendly and not el.is_return]:
             self.db.return_fleet(fleet.from_coordinates)
         commands.return_fleet()

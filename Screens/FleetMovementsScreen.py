@@ -99,7 +99,11 @@ class FleetMovementsScreen(BaseOgameScreen):
         ]:
             if param in fleet_data.keys():
                 value = fleet_data[param]
-                log = list(filter(lambda fleet_object: fleet_object.__str__()[param] == value, log))
+                log = list(
+                    filter(
+                        lambda fleet_object: fleet_object.__str__()[param] == value, log
+                    )
+                )
                 if log and len(log) == 1:
                     self.http.return_fleet(log[0].id)
                     return

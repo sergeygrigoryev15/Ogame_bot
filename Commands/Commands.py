@@ -21,7 +21,9 @@ class Commands(BaseEntity):
             destination_planet = random.choice([p for p in planets if p is not planet])
         else:
             solar_system_planets = self.get_planets_in_my_system()
-            destination_planet = solar_system_planets[0].position # if solar_system_planets else make expedition
+            destination_planet = solar_system_planets[
+                0
+            ].position  # if solar_system_planets else make expedition
         overview_screen.navigation_menu.open_tab(MenuTabs.FLEET)
         fleet_screen = FleetScreen()
         if fleet_screen.has_fleet:
@@ -63,7 +65,14 @@ class Commands(BaseEntity):
             log,
         )
         for planet in [
-            p for p in set(planets) if p not in [el.to_coordinates for el in enemy_fleets if el.remaining_time < timedelta(hours=1)]
+            p
+            for p in set(planets)
+            if p
+            not in [
+                el.to_coordinates
+                for el in enemy_fleets
+                if el.remaining_time < timedelta(hours=1)
+            ]
         ]:
             overview_screen.navigation_menu.open_tab(MenuTabs.FLEET_MOVEMENTS)
             fleet_movements_screen = FleetMovementsScreen()
@@ -76,7 +85,12 @@ class Commands(BaseEntity):
         overview_screen.navigation_menu.open_tab(MenuTabs.GALAXY)
         galaxy_screen = GalaxyScreen()
         planets = galaxy_screen.get_planets()
-        return list(filter(lambda planet: not any([planet.owner.on_vocations, planet.owner.admin]), planets))
+        return list(
+            filter(
+                lambda planet: not any([planet.owner.on_vocations, planet.owner.admin]),
+                planets,
+            )
+        )
 
 
 commands = Commands()

@@ -27,7 +27,6 @@ class LogLevel(Enum):
 
 
 class Logger:
-
     @staticmethod
     def info(text):
         logger.info(text)

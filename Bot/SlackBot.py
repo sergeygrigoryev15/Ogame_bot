@@ -55,7 +55,7 @@ class SlackBot(object):
         default_response = f'Not sure what you mean. Try *{self.EXAMPLE_COMMAND}*.'
         response = None
         if command.startswith(self.EXAMPLE_COMMAND):
-            instr = command[len(self.EXAMPLE_COMMAND):].strip()
+            instr = command[len(self.EXAMPLE_COMMAND) :].strip()
             slackCommands.append(instr)
             response = f'Command "{instr}" added to queue'
         elif command == 'print queue':
