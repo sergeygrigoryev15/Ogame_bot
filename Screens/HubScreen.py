@@ -17,6 +17,7 @@ class HubScreen(BaseScreen):
         return WebElement(XPATH).is_present()
 
     def continue_game(self):
+        time.sleep(3)
         self.btn_continue.click()
         time.sleep(5)
         self.driver.close()

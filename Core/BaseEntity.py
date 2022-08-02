@@ -1,13 +1,13 @@
 import re
 
+import chromedriver_autoinstaller
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import chromedriver_autoinstaller
 
-from Bot.SlackBot import bot
+from Bot.TelegramBot import TelegramBot
 from Core.DbUtils import DbUtils
-from Core.HttpUtils import HttpUtils
 from Core.Env import environ, env
+from Core.HttpUtils import HttpUtils
 from Core.Logger import Logger
 
 global web_driver
@@ -19,14 +19,13 @@ database = None
 global httpClient
 httpClient = None
 
-
 chromedriver_autoinstaller.install()
 
 
 class BaseEntity(object):
     def __init__(self):
         self.URL = 'http://ogame.ru'
-        self.slack_bot = bot
+        self.notification_bot = TelegramBot
         self.logger = Logger()
         self.chrome_options = Options()
         if environ('HEADLESS', env.bool, False):

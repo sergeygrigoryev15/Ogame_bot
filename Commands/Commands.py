@@ -40,14 +40,14 @@ class Commands(BaseEntity):
             fleet_mission_screen.put_all_resources()
             fleet_mission_screen.send_fleet()
 
-            self.slack_bot.send_message(
+            self.notification_bot.send_message(
                 f'fleet from planet {planet} was saved! (sent to {destination_planet}).'
             )
             self.db.return_fleet(planet)
 
             fleet_mission_screen.navigation_menu.open_tab(MenuTabs.OVERVIEW)
         else:
-            self.slack_bot.send_message(
+            self.notification_bot.send_message(
                 f'There is no fleet on the planet {planet}. Nothing to save.'
             )
             fleet_screen.navigation_menu.open_tab(MenuTabs.OVERVIEW)
@@ -78,7 +78,7 @@ class Commands(BaseEntity):
             fleet_movements_screen = FleetMovementsScreen()
             fleet_movements_screen.return_fleet(from_coordinates=planet)
             self.db.delete_returned_fleet(planet)
-            self.slack_bot.send_message(f'Fleet returning to planet {planet}.')
+            self.notification_bot.send_message(f'Fleet returning to planet {planet}.')
 
     def get_planets_in_my_system(self):
         overview_screen = OverviewScreen()

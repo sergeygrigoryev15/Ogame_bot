@@ -1,13 +1,13 @@
-import time
 import re
+import time
 from collections import deque
-from loguru import logger
 
+from loguru import logger
 from slack import WebClient
 from slack.errors import SlackApiError
 
-from Bot.SlackChannels import SlackChannels
-from Core.Env import environ, env
+from Bot.Channels import SlackChannels
+from Core.Env import environ
 
 global slackCommands
 slackCommands = deque()
@@ -38,6 +38,12 @@ class SlackBot(object):
         except SlackApiError as e:
             logger.error(f'Error while sending message "{e.response["error"]}"')
 
+    def alert(self, message):
+        return self.send_message(message, channel=SlackChannels.ALERTS)
+
+    def message_me(self, message):
+        return self.send_message(message, channel=SlackChannels.GENERAL)
+
     def parse_bot_commands(self, slack_events):
         for event in slack_events:
             if event["type"] == "message" and "subtype" not in event:
@@ -55,7 +61,7 @@ class SlackBot(object):
         default_response = f'Not sure what you mean. Try *{self.EXAMPLE_COMMAND}*.'
         response = None
         if command.startswith(self.EXAMPLE_COMMAND):
-            instr = command[len(self.EXAMPLE_COMMAND) :].strip()
+            instr = command[len(self.EXAMPLE_COMMAND):].strip()
             slackCommands.append(instr)
             response = f'Command "{instr}" added to queue'
         elif command == 'print queue':

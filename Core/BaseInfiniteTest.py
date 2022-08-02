@@ -2,7 +2,6 @@ import sys
 import time
 import traceback
 
-from Bot.SlackChannels import SlackChannels
 from Core.BaseTest import BaseTest
 
 
@@ -29,9 +28,7 @@ class BaseInfiniteTest(BaseTest):
             try:
                 self.main_loop()
             except Exception:
-                self.slack_bot.send_message(
-                    traceback.format_exc(), channel=SlackChannels.ALERTS
-                )
+                self.notification_bot.alert(traceback.format_exc())
                 traceback.print_exc(file=sys.stdout)
             self.logger.debug(f'sleep {self.TIMEOUT} seconds')
             time.sleep(self.TIMEOUT)

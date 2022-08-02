@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-from Bot.SlackChannels import SlackChannels
 from Commands.Commands import commands
 from Core.BaseInfiniteTest import BaseInfiniteTest
 from Enums.FleetMissionTypes import FleetMissionTypes
@@ -8,7 +7,6 @@ from Screens.OverviewScreen import OverviewScreen
 
 
 class SaveFleetTest(BaseInfiniteTest):
-
     SAVE_FLEET_TIMEOUT = timedelta(minutes=10)
 
     def main_loop(self):
@@ -28,9 +26,8 @@ class SaveFleetTest(BaseInfiniteTest):
         )
         for fleet in enemy_fleets:
             if fleet.remaining_time < self.SAVE_FLEET_TIMEOUT:
-                self.slack_bot.send_message(
-                    f'we are under attack:\n{fleet.to_coordinates} ({fleet.remaining_time})',
-                    channel=SlackChannels.ALERTS,
+                self.notification_bot.alert(
+                    f'we are under attack:\n{fleet.to_coordinates} ({fleet.remaining_time})'
                 )
                 commands.save_fleet(fleet.to_coordinates)
         commands.return_fleet()
