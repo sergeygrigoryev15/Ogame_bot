@@ -2,7 +2,7 @@ from Elements.WebElement import WebElement
 from Enums.QueueTypes import QueueTypes
 
 
-class NowInProgressElement(object):
+class NowInProgressElement:
     def __init__(self, queue_types: QueueTypes = QueueTypes):
         self.queue_types = queue_types
         self.__elements = {}

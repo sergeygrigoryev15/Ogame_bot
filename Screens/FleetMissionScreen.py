@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from selenium.webdriver.common.by import By
 
 from Elements.WebElement import WebElement
@@ -17,7 +19,7 @@ class FleetMissionScreen(BaseOgameScreen):
         self.btn_all_resources = WebElement('allresources', id_type=By.ID)
         self.btn_send_fleet = WebElement('sendFleet', id_type=By.ID)
 
-    def select_mission_type(self, mission_type=FleetMissionTypes.TRANSPORT):
+    def select_mission_type(self, mission_type: FleetMissionTypes = FleetMissionTypes.TRANSPORT):
         WebElement(self.mission_type_template.format(mission_type.value)).click()
 
     @property
@@ -27,5 +29,6 @@ class FleetMissionScreen(BaseOgameScreen):
     def put_all_resources(self):
         self.btn_all_resources.click()
 
-    def send_fleet(self):
+    def send_fleet(self) -> datetime:
         self.btn_send_fleet.click()
+        return datetime.now()

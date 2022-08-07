@@ -17,6 +17,7 @@ class Environ:
         default: Optional[Any] = BLANK_ENV_VALUE,
         validate: Optional[Callable] = None,
     ):
+        env.read_env()
         return env_type(name, default, validate)
 
 

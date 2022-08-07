@@ -4,9 +4,9 @@ import traceback
 
 from Core.BaseTest import BaseTest
 
-
-global stop
-stop = False
+# TODO get rid of global variable
+global stop_iterations
+stop_iterations = False
 
 
 class BaseInfiniteTest(BaseTest):
@@ -28,11 +28,11 @@ class BaseInfiniteTest(BaseTest):
             try:
                 self.main_loop()
             except Exception:
-                self.notification_bot.alert(traceback.format_exc())
+                self.notification_bot.message_me(traceback.format_exc(limit=1000))
                 traceback.print_exc(file=sys.stdout)
-            self.logger.debug(f'sleep {self.TIMEOUT} seconds')
-            time.sleep(self.TIMEOUT)
+            self.sleep(self.TIMEOUT)
             iteration += 1
-            global stop
-            if stop:
+            global stop_iterations
+            if stop_iterations:
                 self.finish()
+                break

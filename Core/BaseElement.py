@@ -10,7 +10,7 @@ WAIT_ELEMENT_PRESENT_TIMEOUT = 10
 
 
 class BaseElement(BaseEntity):
-    def __init__(self, identifier, id_type=By.XPATH):
+    def __init__(self, identifier: str, id_type: 'By' = By.XPATH):
         BaseEntity.__init__(self)
         self.identifier = identifier
         self.id_type = id_type
@@ -25,11 +25,11 @@ class BaseElement(BaseEntity):
         return self.web_element
 
     @property
-    def x_path(self):
+    def x_path(self) -> str:
         if self.id_type is By.XPATH:
             return self.identifier
         return f'//*[@{self.id_type}="{self.identifier}"]'
 
-    def hover_mouse(self):
+    def hover_mouse(self) -> None:
         action = ActionChains(self.driver).move_to_element(self.element)
         action.perform()

@@ -41,7 +41,7 @@ class FleetDestinationScreen(BaseOgameScreen):
             self.select_planet.click()
             time.sleep(2)
             WebElement(self.planet_option.format(planet)).click()
-        elif isinstance(planet, list) or isinstance(planet, tuple):
+        elif isinstance(planet, (list, tuple)):
             galaxy, system, planet = planet
             self.txb_galaxy.send_keys(galaxy)
             self.txb_system.send_keys(system)

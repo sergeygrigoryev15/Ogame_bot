@@ -7,12 +7,12 @@ TIMEOUT = 60
 
 
 class BaseScreen(BaseEntity):
-    def __init__(self, xpath):
+    def __init__(self, xpath: str):
         BaseEntity.__init__(self)
         self.xpath = xpath
         self.wait_for_page_to_load()
 
-    def wait_for_page_to_load(self, timeout=TIMEOUT):
+    def wait_for_page_to_load(self, timeout: int = TIMEOUT) -> None:
         start_time = time.time()
         while time.time() < start_time + timeout:
             try:

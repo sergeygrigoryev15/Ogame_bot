@@ -1,4 +1,6 @@
 import sqlite3
+from datetime import datetime
+from typing import List
 
 DATABASE_NAME = 'ogame.sqlite'
 
@@ -14,33 +16,37 @@ class DbUtils:
             self.cursor.execute(sql)
         self.connection.commit()
 
-    def save_fleet(self, planet):
+    def save_fleet(self, planet: str) -> None:
         if planet not in self.get_save_fleet_queue():
             self.cursor.execute(
                 'INSERT INTO save_fleet_queue (name) VALUES (?)', (planet,)
             )
             self.connection.commit()
 
-    def return_fleet(self, planet):
+    def return_fleet(self, planet: str, sending_datetime: datetime) -> None:
         if planet not in self.get_return_fleet_queue():
             self.cursor.execute(
-                'INSERT INTO return_fleet_queue (name) VALUES (?)', (planet,)
+                'INSERT INTO return_fleet_queue (name, sending_time) VALUES (?, ?)', (planet, sending_datetime,)
             )
             self.connection.commit()
 
-    def get_save_fleet_queue(self):
+    def get_save_fleet_queue(self) -> List:
         cur = self.cursor.execute('SELECT * FROM save_fleet_queue')
         return [el[0] for el in cur.fetchall()]
 
-    def get_return_fleet_queue(self):
-        cur = self.cursor.execute('SELECT * FROM return_fleet_queue')
+    def get_return_fleet_queue(self) -> List:
+        cur = self.cursor.execute('SELECT name FROM return_fleet_queue')
         return [el[0] for el in cur.fetchall()]
 
-    def delete_saved_fleet(self, planet):
+    def get_return_fleet_sending_time(self, planet: str) -> datetime:
+        cur = self.cursor.execute('SELECT sending_time FROM return_fleet_queue WHERE name=?', (planet,))
+        return cur.fetchone()[0]
+
+    def delete_saved_fleet(self, planet: str) -> None:
         self.cursor.execute('DELETE FROM save_fleet_queue WHERE name=?', (planet,))
         self.connection.commit()
 
-    def delete_returned_fleet(self, planet):
+    def delete_returned_fleet(self, planet: str) -> None:
         self.cursor.execute('DELETE FROM return_fleet_queue WHERE name=?', (planet,))
         self.connection.commit()
 
@@ -50,7 +56,9 @@ class DbUtils:
 
     @property
     def create_return_fleet_queue(self):
-        return """CREATE TABLE IF NOT EXISTS return_fleet_queue(name text NOT NULL)"""
+        return """CREATE TABLE IF NOT EXISTS return_fleet_queue(
+        name text NOT NULL,
+        sending_time timestamp)"""
 
     @property
     def create_users(self):

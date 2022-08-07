@@ -10,21 +10,21 @@ class BaseTest(BaseEntity):
     def __init__(self):
         BaseEntity.__init__(self)
 
-    def before(self):
+    def before(self) -> None:
         login_screen = LoginScreen()
         login_screen.login()
         hub_screen = HubScreen()
         hub_screen.continue_game()
 
-    def relogin(self):
+    def relogin(self) -> None:
         if HubScreen.is_open():
             hub_screen = HubScreen()
             hub_screen.continue_game()
 
-    def run_test(self):
+    def run_test(self) -> None:
         pass
 
-    def finish(self):
+    def finish(self) -> None:
         self.driver.quit()
         global web_driver
         web_driver = None

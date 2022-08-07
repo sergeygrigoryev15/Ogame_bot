@@ -24,7 +24,7 @@ class WebElement(BaseElement):
     def click_via_js(self):
         self.driver.execute_script('arguments[0].click();', self.element)
 
-    def send_keys(self, text):
+    def send_keys(self, text: str):
         self.element.send_keys(text)
 
     def get_text(self):
@@ -56,10 +56,10 @@ class WebElement(BaseElement):
 
     def is_present(self):
         try:
-            elem = self.element
+            self.driver.find_element(self.id_type, self.identifier)
         except (NoSuchElementException, TimeoutException):
             return False
-        return elem.is_displayed()
+        return True
 
     def get_attribute(self, attr):
         return self.element.get_attribute(attr)

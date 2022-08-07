@@ -26,7 +26,7 @@ class SaveFleetTest(BaseInfiniteTest):
         )
         for fleet in enemy_fleets:
             if fleet.remaining_time < self.SAVE_FLEET_TIMEOUT:
-                self.notification_bot.alert(
+                self.notification_bot.message_me(
                     f'we are under attack:\n{fleet.to_coordinates} ({fleet.remaining_time})'
                 )
                 commands.save_fleet(fleet.to_coordinates)

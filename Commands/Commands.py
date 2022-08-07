@@ -1,5 +1,5 @@
 import random
-from datetime import timedelta
+from datetime import datetime
 
 from Core.BaseEntity import BaseEntity
 from Enums.FleetMissionTypes import FleetMissionTypes
@@ -14,16 +14,21 @@ from Screens.OverviewScreen import OverviewScreen
 
 class Commands(BaseEntity):
     def save_fleet(self, planet):
+        """
+        Send fleet with resources to other planet or to expedition if there only one planet.
+        """
         overview_screen = OverviewScreen()
         overview_screen.planets_list.select_planet(planet)
         planets = overview_screen.planets_list.data.keys()
         if len(planets) > 1:
             destination_planet = random.choice([p for p in planets if p is not planet])
+            mission_type = FleetMissionTypes.TRANSPORT
         else:
-            solar_system_planets = self.get_planets_in_my_system()
-            destination_planet = solar_system_planets[
-                0
-            ].position  # if solar_system_planets else make expedition
+            overview_screen.navigation_menu.open_tab(MenuTabs.GALAXY)
+            galaxy_screen = GalaxyScreen()
+            galaxy, solar_system = galaxy_screen.current_system
+            destination_planet = [galaxy, solar_system, '16']
+            mission_type = FleetMissionTypes.EXPEDITION
         overview_screen.navigation_menu.open_tab(MenuTabs.FLEET)
         fleet_screen = FleetScreen()
         if fleet_screen.has_fleet:
@@ -36,61 +41,47 @@ class Commands(BaseEntity):
             fleet_destination_screen.go_next()
 
             fleet_mission_screen = FleetMissionScreen()
-            fleet_mission_screen.select_mission_type()
+            fleet_mission_screen.select_mission_type(mission_type)
             fleet_mission_screen.put_all_resources()
-            fleet_mission_screen.send_fleet()
+            sending_datetime = fleet_mission_screen.send_fleet()
 
-            self.notification_bot.send_message(
+            self.notification_bot.message_me(
                 f'fleet from planet {planet} was saved! (sent to {destination_planet}).'
             )
-            self.db.return_fleet(planet)
+            self.db.return_fleet(planet, sending_datetime)
 
             fleet_mission_screen.navigation_menu.open_tab(MenuTabs.OVERVIEW)
         else:
-            self.notification_bot.send_message(
+            self.notification_bot.message_me(
                 f'There is no fleet on the planet {planet}. Nothing to save.'
             )
             fleet_screen.navigation_menu.open_tab(MenuTabs.OVERVIEW)
 
     def return_fleet(self):
-        # TODO when saving fleet, remember time of sending ships.
-        #  when returning fleet, return time will be current_time - time of sending.
-        #  if return_time < N* enemy remaining_time, then return it
+        """
+        Get all planned fleets to return.
+        If latest planned attack time is before planned fleet return time, then click return it.
+        """
         planets = self.db.get_return_fleet_queue()
         overview_screen = OverviewScreen()
         log = overview_screen.fleetAlertsTab.get_log()
         enemy_fleets = filter(
-            lambda el: el.is_friendly is False
-            and el.mission_type == FleetMissionTypes.ATTACK,
-            log,
+            lambda el: el.is_friendly is False and el.mission_type == FleetMissionTypes.ATTACK, log,
         )
-        for planet in [
-            p
-            for p in set(planets)
-            if p
-            not in [
-                el.to_coordinates
-                for el in enemy_fleets
-                if el.remaining_time < timedelta(hours=1)
-            ]
-        ]:
+        enemy_targets = [enemy_fleet.to_planet for enemy_fleet in enemy_fleets]
+        for planet in set(planets):
+            fleet_flight_time = datetime.now() - self.db.get_return_fleet_sending_time(planet)
+            fleet_return_time = datetime.now() + fleet_flight_time
+            if planet in enemy_targets:
+                attacks_times = [enemy_fleet.arrival_time for enemy_fleet in enemy_fleets
+                                 if enemy_fleet.to_planet == planet]
+                if max(attacks_times) > fleet_return_time:
+                    continue
             overview_screen.navigation_menu.open_tab(MenuTabs.FLEET_MOVEMENTS)
             fleet_movements_screen = FleetMovementsScreen()
             fleet_movements_screen.return_fleet(from_coordinates=planet)
             self.db.delete_returned_fleet(planet)
-            self.notification_bot.send_message(f'Fleet returning to planet {planet}.')
-
-    def get_planets_in_my_system(self):
-        overview_screen = OverviewScreen()
-        overview_screen.navigation_menu.open_tab(MenuTabs.GALAXY)
-        galaxy_screen = GalaxyScreen()
-        planets = galaxy_screen.get_planets()
-        return list(
-            filter(
-                lambda planet: not any([planet.owner.on_vocations, planet.owner.admin]),
-                planets,
-            )
-        )
+            self.notification_bot.message_me(f'Fleet returning to planet {planet}.')
 
 
 commands = Commands()

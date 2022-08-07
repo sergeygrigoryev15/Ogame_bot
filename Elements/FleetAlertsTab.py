@@ -9,7 +9,7 @@ from Enums.FleetMissionTypes import FleetMissionTypes
 DATE_FORMAT = '%d.%m %H:%M:%S'
 
 
-class BattleEvent(object):
+class BattleEvent:
     def __init__(self, element):
         self.element = element
         self.additionalXpathPattern = "./*[contains(@class, '{}')]"

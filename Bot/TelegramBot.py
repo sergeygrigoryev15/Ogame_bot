@@ -1,14 +1,13 @@
-from typing import List
+from typing import List, Union
+from unittest.mock import Mock
 
+import requests
 import telebot
-import urllib3
 from loguru import logger
-from telebot import types
+from telebot import types, TeleBot
 
-from Bot.Channels import TelegramChannels
+from Core import Env
 from Core.Env import environ
-
-urllib3.disable_warnings()
 
 
 def choose_option(options: List[str], row_count: int = 4) -> types.ReplyKeyboardMarkup:
@@ -28,65 +27,55 @@ def make_request(method, request_url, params, files, timeout, proxies):
                  verify=False)
 
 
-bot = telebot.TeleBot(environ('TELEGRAM_TOKEN'), parse_mode='Markdown')
-
-telebot.logger = logger
-
-telebot.apihelper.CUSTOM_REQUEST_SENDER = make_request
-
-bot.set_my_commands([
-    telebot.types.BotCommand("/help", "get list of commands and their description"),
-    telebot.types.BotCommand("/saving_start", "start fleet saving process"),
-    telebot.types.BotCommand("/saving_stop", "stop fleet saving process"),
-], scope=types.BotCommandScopeDefault())
-
-
-@bot.message_handler(commands=['saving_start'])
-def start_saving() -> None:
-    """
-    Start test to save fleet if planet is under attack.
-    """
-    pass
-
-
-@bot.message_handler(commands=['saving_stop'])
-def stop_saving() -> None:
-    """
-    Stop saving fleet test if it is in progress.
-    """
-    pass
-
-
-@bot.message_handler(commands=['help'])
-def help_message(message: types.Message) -> None:
-    """
-    When get command /help, sent list of commands
-
-    :param message: the letter to which the response is sent
-    """
-    command_list = bot.get_my_commands()
-    messages = ['List of commands:'] + [f'/{command.command}  {command.description}' for command in command_list]
-    bot.reply_to(message, '\n'.join(messages))
-
-
 class TelegramBot:
 
-    @staticmethod
-    def message_me(text: str) -> types.Message:
-        return bot.send_message(TelegramChannels.PERSONAL_CHANNEL.value, text)
+    def __init__(self):
+        requests.packages.urllib3.disable_warnings()
+        self.personal_channel_id = environ('TELEGRAM_BOT_CHAT_ID')
+        self.bot_token = environ('TELEGRAM_TOKEN')
+        self._bot = None
+        telebot.logger = logger
+        telebot.apihelper.CUSTOM_REQUEST_SENDER = make_request
+        self.__initialize_commands()
 
-    @staticmethod
-    def send_message(text: str):
-        return TelegramBot.message_me(text)
+    @property
+    def valid(self) -> bool:
+        if self.bot_token in [Env.BLANK_ENV_VALUE, '']:
+            logger.warning('Telegram token not set. Notifications would not be sent.')
+            return False
+        if self.personal_channel_id in [Env.BLANK_ENV_VALUE, '']:
+            logger.warning('Telegram chat id not set. Notifications would not be sent.')
+            return False
+        return True
 
-    @staticmethod
-    def alert(text: str):
-        return TelegramBot.message_me(text)
+    @property
+    def bot(self) -> Union['TeleBot', 'Mock']:
+        if not self._bot:
+            if self.valid:
+                self._bot = TeleBot(self.bot_token, parse_mode='Markdown')
+            else:
+                self._bot = Mock()
+        return self._bot
 
-    @staticmethod
-    def run(timeout=20, long_polling_timeout=20):
-        bot.infinity_polling(**locals())
+    def __initialize_commands(self) -> None:
+        self.bot.set_my_commands([
+            telebot.types.BotCommand('/help', 'get list of commands and their description'),
+        ], scope=types.BotCommandScopeDefault())
+
+        def __help_message(message: types.Message):
+            command_list = self.bot.get_my_commands()
+            messages = ['List of commands:'] + [f'/{command.command}  {command.description}' for command in
+                                                command_list]
+            self.bot.reply_to(message, '\n'.join(messages))
+
+        self.bot.message_handler(commands=['help'])(__help_message)
+
+    def message_me(self, text: str) -> None:
+        self.bot.send_message(self.personal_channel_id, text)
+
+    def run(self, timeout: int = 20, long_polling_timeout: int = 20) -> None:
+        self.bot.infinity_polling(timeout=timeout, long_polling_timeout=long_polling_timeout)
 
 
 if __name__ == '__main__':
-    TelegramBot.run()
+    TelegramBot().run()

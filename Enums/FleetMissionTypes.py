@@ -7,3 +7,4 @@ class FleetMissionTypes(Enum):
     LEAVE = '4'
     ESPIONAGE = '6'
     EXPEDITION = '15'
+    COLONIZATION = '7'
