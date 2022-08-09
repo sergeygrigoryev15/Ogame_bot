@@ -26,7 +26,8 @@ class DbUtils:
     def return_fleet(self, planet: str, sending_datetime: datetime) -> None:
         if planet not in self.get_return_fleet_queue():
             self.cursor.execute(
-                'INSERT INTO return_fleet_queue (name, sending_time) VALUES (?, ?)', (planet, sending_datetime,)
+                'INSERT INTO return_fleet_queue (name, sending_time) VALUES (?, ?)',
+                (planet, str(sending_datetime.timestamp()),)
             )
             self.connection.commit()
 
@@ -39,8 +40,11 @@ class DbUtils:
         return [el[0] for el in cur.fetchall()]
 
     def get_return_fleet_sending_time(self, planet: str) -> datetime:
-        cur = self.cursor.execute('SELECT sending_time FROM return_fleet_queue WHERE name=?', (planet,))
-        return cur.fetchone()[0]
+        cur = self.cursor.execute('SELECT sending_time '
+                                  'FROM return_fleet_queue '
+                                  'WHERE name=?', (planet,))
+        sending_time = cur.fetchone()[0]
+        return datetime.fromtimestamp(float(sending_time))
 
     def delete_saved_fleet(self, planet: str) -> None:
         self.cursor.execute('DELETE FROM save_fleet_queue WHERE name=?', (planet,))
@@ -58,7 +62,7 @@ class DbUtils:
     def create_return_fleet_queue(self):
         return """CREATE TABLE IF NOT EXISTS return_fleet_queue(
         name text NOT NULL,
-        sending_time timestamp)"""
+        sending_time text NOT NULL)"""
 
     @property
     def create_users(self):

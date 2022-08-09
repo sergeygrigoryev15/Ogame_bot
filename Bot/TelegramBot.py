@@ -52,7 +52,7 @@ class TelegramBot:
     def bot(self) -> Union['TeleBot', 'Mock']:
         if not self._bot:
             if self.valid:
-                self._bot = TeleBot(self.bot_token, parse_mode='Markdown')
+                self._bot = TeleBot(self.bot_token, parse_mode='HTML')
             else:
                 self._bot = Mock()
         return self._bot

@@ -1,6 +1,7 @@
 import sys
 import traceback
 from Core.BaseEntity import BaseEntity
+from Screens.BaseOgameScreen import BaseOgameScreen
 
 from Screens.HubScreen import HubScreen
 from Screens.LoginScreen import LoginScreen
@@ -15,6 +16,7 @@ class BaseTest(BaseEntity):
         login_screen.login()
         hub_screen = HubScreen()
         hub_screen.continue_game()
+        BaseOgameScreen.return_to_overview()
 
     def relogin(self) -> None:
         if HubScreen.is_open():

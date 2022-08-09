@@ -1,8 +1,11 @@
+from selenium.webdriver.common.by import By
+
 from Core.BaseScreen import BaseScreen
 from Elements.FleetAlertsTab import FleetAlertsTab
 from Elements.NavigationMenu import NavigationMenu
 from Elements.PlanetsList import PlanetsList
 from Elements.ResourcesTab import ResourcesTab
+from Elements.WebElement import WebElement
 
 
 class BaseOgameScreen(BaseScreen):
@@ -17,3 +20,7 @@ class BaseOgameScreen(BaseScreen):
     @property
     def resources(self):
         return self.resources_tab.data
+
+    @staticmethod
+    def return_to_overview():
+        WebElement('pageReloader', By.ID).click()

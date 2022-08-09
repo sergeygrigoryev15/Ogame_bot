@@ -89,23 +89,20 @@ class FleetMovementsScreen(BaseOgameScreen):
         return [el.__str__() for el in self.event_log]
 
     def return_fleet(self, **fleet_data):
+        # TODO now supports only from_coordinates. Fix this.
         log = self.event_log
-        log = filter(lambda fleet_object: fleet_object.btn_reverse.is_present(), log)
         for param in [
             'from_coordinates',
-            'to_coordinates',
-            'mission_type',
-            'arrival_time',
+            # 'to_coordinates',
+            # 'mission_type',
+            # 'arrival_time',
         ]:
             if param in fleet_data.keys():
                 value = fleet_data[param]
-                log = list(
-                    filter(
-                        lambda fleet_object: fleet_object.__str__()[param] == value, log
-                    )
-                )
-                if log and len(log) == 1:
-                    self.http.return_fleet(log[0].id)
-                    return
-        for el in log:
-            self.http.return_fleet(el.id)
+                return_fleet = WebElement('//*[contains(@class, "fleetDetails")][.//*[contains(.,"{}")]]'
+                                          '//a[contains(@href, "component=movement&return=")]'.format(value))
+                return_fleet.click()
+                return
+        else:
+            self.notification_bot.message_me(f'Could not return fleet with data "{fleet_data}"\n'
+                                             f'{[el.__str__() for el in log]}')

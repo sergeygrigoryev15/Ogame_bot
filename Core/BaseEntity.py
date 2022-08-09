@@ -1,7 +1,6 @@
 import re
 import time
 
-from selenium.webdriver.android.webdriver import WebDriver
 from tqdm import trange
 
 import chromedriver_autoinstaller
@@ -38,7 +37,7 @@ class BaseEntity:
             self.chrome_options.add_argument("--headless")
 
     @property
-    def driver(self) -> WebDriver:
+    def driver(self):
         global web_driver
         if web_driver:
             return web_driver

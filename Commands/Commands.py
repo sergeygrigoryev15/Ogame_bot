@@ -4,8 +4,7 @@ from datetime import datetime
 from Core.BaseEntity import BaseEntity
 from Enums.FleetMissionTypes import FleetMissionTypes
 from Enums.MenuTabs import MenuTabs
-from Screens.FleetDestinationScreen import FleetDestinationScreen
-from Screens.FleetMissionScreen import FleetMissionScreen
+from Screens.SendFleetScreen import SendFleetScreen
 from Screens.FleetMovementsScreen import FleetMovementsScreen
 from Screens.FleetScreen import FleetScreen
 from Screens.GalaxyScreen import GalaxyScreen
@@ -21,7 +20,7 @@ class Commands(BaseEntity):
         overview_screen.planets_list.select_planet(planet)
         planets = overview_screen.planets_list.data.keys()
         if len(planets) > 1:
-            destination_planet = random.choice([p for p in planets if p is not planet])
+            destination_planet = random.choice([p for p in planets if p != planet])
             mission_type = FleetMissionTypes.TRANSPORT
         else:
             overview_screen.navigation_menu.open_tab(MenuTabs.GALAXY)
@@ -35,22 +34,19 @@ class Commands(BaseEntity):
             fleet_screen.select_all()
             fleet_screen.go_next()
 
-            fleet_destination_screen = FleetDestinationScreen()
-            fleet_destination_screen.select_speed(10)
-            fleet_destination_screen.select_destination(destination_planet)
-            fleet_destination_screen.go_next()
-
-            fleet_mission_screen = FleetMissionScreen()
-            fleet_mission_screen.select_mission_type(mission_type)
-            fleet_mission_screen.put_all_resources()
-            sending_datetime = fleet_mission_screen.send_fleet()
+            send_fleet_screen = SendFleetScreen()
+            send_fleet_screen.select_destination(destination_planet)
+            send_fleet_screen.select_mission_type(mission_type)
+            send_fleet_screen.select_speed(10)
+            send_fleet_screen.put_all_resources()
+            sending_datetime = send_fleet_screen.send_fleet()
 
             self.notification_bot.message_me(
                 f'fleet from planet {planet} was saved! (sent to {destination_planet}).'
             )
             self.db.return_fleet(planet, sending_datetime)
 
-            fleet_mission_screen.navigation_menu.open_tab(MenuTabs.OVERVIEW)
+            send_fleet_screen.navigation_menu.open_tab(MenuTabs.OVERVIEW)
         else:
             self.notification_bot.message_me(
                 f'There is no fleet on the planet {planet}. Nothing to save.'

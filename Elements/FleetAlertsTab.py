@@ -69,7 +69,7 @@ class FleetAlertsTab(WebElement):
         self.xpath = '//div[@id="message-wrapper"]'
         WebElement.__init__(self, self.xpath)
 
-        self.empty_fleet_list = WebElement('eventboxBlank', id_type=By.ID)
+        self.empty_fleet_list = WebElement('//*[@id="eventboxBlank" and not(contains(@style, "none"))]')
         self.messages = self.xpath + '//*[contains(@class, "msg_count")]'
 
     @property
@@ -85,9 +85,9 @@ class FleetAlertsTab(WebElement):
 
     @property
     def expanded(self):
-        return WebElement('eventboxContent', By.ID).is_present()
+        return WebElement('//*[@id="eventboxContent" and not(contains(@style, "none"))]').is_present()
 
-    def __expand(self):
+    def _expand(self):
         if not self.expanded:
             for _ in range(5):
                 WebElement(self.xpath).click()
@@ -95,7 +95,7 @@ class FleetAlertsTab(WebElement):
                 if self.expanded:
                     break
 
-    def __collapse(self):
+    def _collapse(self):
         if self.expanded:
             for _ in range(5):
                 WebElement(self.xpath).click()
@@ -113,7 +113,7 @@ class FleetAlertsTab(WebElement):
     def get_log(self):
         if self.empty_fleet_list.is_present():
             return []
-        self.__expand()
+        self._expand()
         log = self.event_log
-        self.__collapse()
+        self._collapse()
         return log
