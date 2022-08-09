@@ -23,6 +23,11 @@ class BaseTest(BaseEntity):
             hub_screen = HubScreen()
             hub_screen.continue_game()
 
+    def reinitialize_browser(self):
+        self.driver.get('chrome://settings/clearBrowserData')
+        self.driver.get(self.url)
+        self.sleep(5)
+
     def run_test(self) -> None:
         pass
 

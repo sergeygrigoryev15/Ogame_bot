@@ -12,7 +12,7 @@ stop_iterations = False
 class BaseInfiniteTest(BaseTest):
     def __init__(self):
         BaseTest.__init__(self)
-        self.TIMEOUT = 60 * 2
+        self.TIMEOUT = 60 * 5
 
     def main_loop(self):
         pass
@@ -23,7 +23,6 @@ class BaseInfiniteTest(BaseTest):
         self.before()
         while True:
             self.logger.debug(f'iteration = {iteration}')
-            self.driver.refresh()
             self.relogin()
             try:
                 self.main_loop()
@@ -31,8 +30,10 @@ class BaseInfiniteTest(BaseTest):
                 self.notification_bot.message_me(traceback.format_exc(limit=1000))
                 traceback.print_exc(file=sys.stdout)
             self.sleep(self.TIMEOUT)
+            self.reinitialize_browser()
             iteration += 1
             global stop_iterations
             if stop_iterations:
                 self.finish()
+                stop_iterations = False
                 break

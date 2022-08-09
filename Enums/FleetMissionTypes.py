@@ -8,3 +8,4 @@ class FleetMissionTypes(Enum):
     ESPIONAGE = '6'
     EXPEDITION = '15'
     COLONIZATION = '7'
+    LOOK_FOR_LIFE = '18'
