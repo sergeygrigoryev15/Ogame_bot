@@ -9,3 +9,4 @@ pyTelegramBotAPI-markups==0.0.4
 urllib3==1.26.9
 waiting==1.4.1
 tqdm==4.60.0
+psutil==5.9.1

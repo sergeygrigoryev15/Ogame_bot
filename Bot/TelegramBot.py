@@ -1,6 +1,9 @@
+import subprocess
+from pathlib import Path
 from typing import List, Union
 from unittest.mock import Mock
 
+import psutil as psutil
 import requests
 import telebot
 from loguru import logger
@@ -37,6 +40,7 @@ class TelegramBot:
         telebot.logger = logger
         telebot.apihelper.CUSTOM_REQUEST_SENDER = make_request
         self.__initialize_commands()
+        self.processes = {}
 
     @property
     def valid(self) -> bool:
@@ -60,6 +64,8 @@ class TelegramBot:
     def __initialize_commands(self) -> None:
         self.bot.set_my_commands([
             telebot.types.BotCommand('/help', 'get list of commands and their description'),
+            telebot.types.BotCommand('/save', 'save fleet'),
+            telebot.types.BotCommand('/stop', 'stop command'),
         ], scope=types.BotCommandScopeDefault())
 
         def __help_message(message: types.Message):
@@ -69,6 +75,28 @@ class TelegramBot:
             self.bot.reply_to(message, '\n'.join(messages))
 
         self.bot.message_handler(commands=['help'])(__help_message)
+
+        def __start_save(message: types.Message):
+            root = Path(__file__).parent.parent
+            script_path = root / 'Tests' / 'SaveFleetTest.py'
+            proc = subprocess.Popen(['python', str(script_path)], cwd=str(root), shell=True, stdout=subprocess.PIPE)
+            self.processes.update({'save_fleet': proc})
+            self.bot.reply_to(message, 'Started')
+
+        self.bot.message_handler(commands=['save'])(__start_save)
+
+        def __stop_save(message: types.Message):
+            process = self.processes.get('save_fleet')
+            if process:
+                process = psutil.Process(process.pid)
+                for proc in process.children(recursive=True):
+                    proc.kill()
+                process.kill()
+                self.bot.reply_to(message, 'Stopped')
+            else:
+                self.bot.reply_to(message, f'Nothing to stop. Existing processes: {self.processes.keys()}')
+
+        self.bot.message_handler(commands=['stop'])(__stop_save)
 
     def message_me(self, text: str) -> None:
         self.bot.send_message(self.personal_channel_id, text)
