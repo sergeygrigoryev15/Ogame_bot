@@ -18,12 +18,12 @@ class SaveFleetTest(BaseInfiniteTest):
             self.logger.make_table(
                 [el.__str__() for el in log], coloring={'is_friendly': lambda x: x}
             )
-        enemy_fleets = filter(
-            lambda el: el.is_friendly is False
-            and el.mission_type == FleetMissionTypes.ATTACK
-            and not el.is_return,
-            log,
-        )
+        enemy_fleets = [
+            el for el in log if
+            not el.is_friendly and
+            el.mission_type == FleetMissionTypes.ATTACK and
+            not el.is_return
+        ]
         for fleet in enemy_fleets:
             if fleet.remaining_time < self.SAVE_FLEET_TIMEOUT:
                 self.notification_bot.message_me(

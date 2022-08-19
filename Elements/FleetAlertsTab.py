@@ -1,8 +1,6 @@
 import time
 from datetime import datetime
 
-from selenium.webdriver.common.by import By
-
 from Elements.WebElement import WebElement
 from Enums.FleetMissionTypes import FleetMissionTypes
 
@@ -14,14 +12,13 @@ class BattleEvent:
         self.element = element
         self.additionalXpathPattern = "./*[contains(@class, '{}')]"
 
-        self.mission_type = self.element.get_attribute('data-mission-type')
+        self.mission_type = FleetMissionTypes(self.element.get_attribute('data-mission-type'))
 
         self.is_return = self.element.get_attribute('data-return-flight') == 'true'
 
-        self.is_friendly = 'friendly' in self.element.find_element_by_xpath(
-            self.additionalXpathPattern.format('countDown')
-            + '/*[contains(@id, "counter-eventlist")]'
-        ).get_attribute('class')
+        self.is_friendly = self.mission_type == FleetMissionTypes.LOOK_FOR_LIFE or 'friendly' in self.element.find_element_by_xpath(
+            self.additionalXpathPattern.format('countDown') + '/*[contains(@id, "counter-eventlist")]').get_attribute(
+            'class')
 
         self.arrival_time = datetime.fromtimestamp(
             int(self.element.get_attribute('data-arrival-time'))
@@ -51,7 +48,7 @@ class BattleEvent:
 
     def __str__(self):
         return {
-            'mission_type': FleetMissionTypes(self.mission_type),
+            'mission_type': self.mission_type,
             'is_return': self.is_return,
             'arrival_time': self.arrival_time.strftime(DATE_FORMAT),
             'from_planet': self.from_planet,

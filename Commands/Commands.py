@@ -62,7 +62,7 @@ class Commands(BaseEntity):
         overview_screen = OverviewScreen()
         log = overview_screen.fleetAlertsTab.get_log()
         enemy_fleets = filter(
-            lambda el: el.is_friendly is False and el.mission_type == FleetMissionTypes.ATTACK, log,
+            lambda el: not el.is_friendly and el.mission_type == FleetMissionTypes.ATTACK, log,
         )
         enemy_targets = [enemy_fleet.to_planet for enemy_fleet in enemy_fleets]
         for planet in set(planets):
