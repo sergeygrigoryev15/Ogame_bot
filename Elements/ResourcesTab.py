@@ -63,7 +63,7 @@ class ResourcesTab(WebElement):
         data.update({'produced': int(produced.get_int()), 'used': int(used.get_int())})
         return data
 
-    def init_data(self):
+    def refresh(self):
         for r in Resources:
             tmp_data = {}
             tmp_data.update({'available': self.get_current_count(r)})
@@ -79,6 +79,5 @@ class ResourcesTab(WebElement):
 
     @property
     def data(self):
-        if not self.resources_data:
-            self.init_data()
+        self.refresh()
         return self.resources_data
